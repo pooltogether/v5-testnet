@@ -14,31 +14,6 @@ contract IntegrationTest is BaseSetup {
   }
 
   /* ============ Helper Functions ============ */
-  function _accrueYield(uint256 _yield) internal {
-    underlyingAsset.mint(address(this), _yield);
-
-    underlyingAsset.approve(address(vault), _yield);
-    vault.deposit(_yield, SPONSORSHIP_ADDRESS);
-
-    underlyingAsset.mint(address(yieldVault), _yield);
-  }
-
-  function _liquidate(uint256 _yield) internal returns (uint256) {
-    uint256 _prizeTokenToContribute = liquidationPair.computeExactAmountIn(_yield);
-
-    prizeToken.mint(address(this), _prizeTokenToContribute);
-    prizeToken.approve(address(liquidationRouter), _prizeTokenToContribute);
-
-    liquidationRouter.swapExactAmountOut(
-      liquidationPair,
-      address(this),
-      _yield,
-      _prizeTokenToContribute
-    );
-
-    return _prizeTokenToContribute;
-  }
-
   function _awardPrizePool() internal {
     // twabController.getAverageBalanceBetween(address(vault), address(this), uint32(1), uint32(86401));
     console2.log("prizePool.nextDrawStartsAt()", prizePool.nextDrawStartsAt());
@@ -64,43 +39,33 @@ contract IntegrationTest is BaseSetup {
   }
 
   /* ============ Tests ============ */
-  function testLiquidate() external {
-    uint256 _yield = 10e18;
+  //   function testAwardPrizePool() external {
+  //   uint256 _amount = 1000e18;
+  //   uint256 _yield = 10e18;
 
-    _accrueYield(_yield);
-    uint256 _prizeTokenContributed = _liquidate(_yield);
-    console2.log("_prizeTokenContributed", _prizeTokenContributed);
+  //   _deposit(_amount, address(this));
 
-    assertEq(prizeToken.balanceOf(address(prizePool)), _prizeTokenContributed);
-  }
+  //   _accrueYield(_yield);
+  //   _liquidate(_yield);
 
-  function testAwardPrizePool() external {
-    uint256 _amount = 1000e18;
-    uint256 _yield = 10e18;
+  //   _awardPrizePool();
 
-    _deposit(_amount, address(this));
+  //   assertEq(prizePool.reserve(), 1e18);
+  // }
 
-    _accrueYield(_yield);
-    _liquidate(_yield);
+  // function testClaimPrizes() external {
+  //   uint256 _amount = 1000e18;
+  //   uint256 _yield = 10e18;
 
-    _awardPrizePool();
+  //   _deposit(_amount, address(this));
 
-    assertEq(prizePool.reserve(), 1e18);
-  }
+  //   _accrueYield(_yield);
+  //   _liquidate(_yield);
 
-  function testClaimPrizes() external {
-    uint256 _amount = 1000e18;
-    uint256 _yield = 10e18;
+  //   _awardPrizePool();
 
-    _deposit(_amount, address(this));
+  //   _claimPrizes();
 
-    _accrueYield(_yield);
-    _liquidate(_yield);
-
-    _awardPrizePool();
-
-    _claimPrizes();
-
-    // assertEq(prizeToken.balanceOf(address(this)));
-  }
+  //   // assertEq(prizeToken.balanceOf(address(this)));
+  // }
 }

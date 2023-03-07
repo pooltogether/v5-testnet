@@ -118,6 +118,9 @@ contract BaseSetup is Test {
     liquidationRouter = new LiquidationRouter(new LiquidationPairFactory());
   }
 
+  /* ============ Helper Functions ============ */
+
+  /* ============ Deposit ============ */
   function _mint(uint256 _amount, address _user) internal {
     underlyingAsset.mint(_user, _amount);
     underlyingAsset.approve(address(vault), type(uint256).max);
@@ -131,5 +134,32 @@ contract BaseSetup is Test {
   function _sponsor(uint256 _amount, address _user) internal {
     _mint(_amount, _user);
     vault.sponsor(_amount, _user);
+  }
+
+  /* ============ Liquidate ============ */
+  function _accrueYield(uint256 _yield) internal {
+    _mint(_yield, address(this));
+    vault.deposit(_yield, SPONSORSHIP_ADDRESS);
+
+    _mint(_yield, address(yieldVault));
+  }
+
+  function _liquidate(uint256 _yield, address _user) internal returns (
+    uint256 userPrizeTokenBalanceBeforeSwap,
+    uint256 prizeTokenContributed
+  ) {
+    prizeTokenContributed = liquidationPair.computeExactAmountIn(_yield);
+
+    prizeToken.mint(_user, prizeTokenContributed);
+    prizeToken.approve(address(liquidationRouter), prizeTokenContributed);
+
+    userPrizeTokenBalanceBeforeSwap = prizeToken.balanceOf(_user);
+
+    liquidationRouter.swapExactAmountOut(
+      liquidationPair,
+      _user,
+      _yield,
+      prizeTokenContributed
+    );
   }
 }
