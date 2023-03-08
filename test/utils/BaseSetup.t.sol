@@ -165,8 +165,6 @@ contract BaseSetup is Test {
 
   /* ============ Award ============ */
   function _award() internal {
-    // twabController.getAverageBalanceBetween(address(vault), address(this), uint32(1), uint32(86401));
-    console2.log("prizePool.nextDrawStartsAt()", prizePool.nextDrawStartsAt());
     vm.warp(prizePool.nextDrawStartsAt() + drawPeriodSeconds);
     prizePool.completeAndStartNextDraw(winningRandomNumber);
   }

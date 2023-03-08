@@ -2,7 +2,6 @@
 pragma solidity 0.8.17;
 
 import "forge-std/Test.sol";
-import { console2 } from "forge-std/console2.sol";
 import { ERC20Mock, IERC20 } from "openzeppelin/mocks/ERC20Mock.sol";
 
 import { BaseSetup, IVault } from "test/utils/BaseSetup.t.sol";
