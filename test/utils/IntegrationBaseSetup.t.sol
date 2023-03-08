@@ -2,7 +2,8 @@
 pragma solidity 0.8.17;
 
 import "forge-std/Test.sol";
-import { ERC20Mock, IERC20Metadata } from "openzeppelin/mocks/ERC20Mock.sol";
+import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
+import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
 
 import { PrizePool, SD59x18 } from "v5-prize-pool/PrizePool.sol";
 import { ud2x18 } from "prb-math/UD2x18.sol";
@@ -19,7 +20,7 @@ import { YieldVault } from "v5-vault-mock/YieldVault.sol";
 
 import { Utils } from "./Utils.t.sol";
 
-contract BaseSetup is Test {
+contract IntegrationBaseSetup is Test {
   /* ============ Variables ============ */
   Utils internal utils;
 
@@ -116,74 +117,5 @@ contract BaseSetup is Test {
     vault.setLiquidationPair(liquidationPair);
 
     liquidationRouter = new LiquidationRouter(new LiquidationPairFactory());
-  }
-
-  /* ============ Helper Functions ============ */
-
-  /* ============ Deposit ============ */
-  function _mint(uint256 _amount, address _user) internal {
-    underlyingAsset.mint(_user, _amount);
-    underlyingAsset.approve(address(vault), type(uint256).max);
-  }
-
-  function _deposit(uint256 _amount, address _user) internal {
-    _mint(_amount, _user);
-    vault.deposit(_amount, _user);
-  }
-
-  function _sponsor(uint256 _amount, address _user) internal {
-    _mint(_amount, _user);
-    vault.sponsor(_amount, _user);
-  }
-
-  /* ============ Liquidate ============ */
-  function _accrueYield(uint256 _yield) internal {
-    _mint(_yield, address(this));
-    vault.deposit(_yield, SPONSORSHIP_ADDRESS);
-
-    _mint(_yield, address(yieldVault));
-  }
-
-  function _liquidate(uint256 _yield, address _user) internal returns (
-    uint256 userPrizeTokenBalanceBeforeSwap,
-    uint256 prizeTokenContributed
-  ) {
-    prizeTokenContributed = liquidationPair.computeExactAmountIn(_yield);
-
-    prizeToken.mint(_user, prizeTokenContributed);
-    prizeToken.approve(address(liquidationRouter), prizeTokenContributed);
-
-    userPrizeTokenBalanceBeforeSwap = prizeToken.balanceOf(_user);
-
-    liquidationRouter.swapExactAmountOut(
-      liquidationPair,
-      _user,
-      _yield,
-      prizeTokenContributed
-    );
-  }
-
-  /* ============ Award ============ */
-  function _award() internal {
-    vm.warp(prizePool.nextDrawStartsAt() + drawPeriodSeconds);
-    prizePool.completeAndStartNextDraw(winningRandomNumber);
-  }
-
-  /* ============ Claim ============ */
-  function _claim(address _user, uint8[] memory _tiers) internal returns (uint256) {
-    address[] memory _winners = new address[](1);
-    _winners[0] = _user;
-
-    vm.warp(
-      drawPeriodSeconds /
-        prizePool.estimatedPrizeCount() +
-        prizePool.lastCompletedDrawStartedAt() +
-        drawPeriodSeconds +
-        10
-    );
-
-    uint256 _claimFees = claimer.claimPrizes(IVault(address(vault)), _winners, _tiers, 0, address(this));
-
-    return _claimFees;
   }
 }

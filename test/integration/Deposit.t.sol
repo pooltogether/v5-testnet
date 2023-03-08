@@ -4,9 +4,10 @@ pragma solidity 0.8.17;
 import "forge-std/Test.sol";
 import { ERC20Mock, IERC20 } from "openzeppelin/mocks/ERC20Mock.sol";
 
-import { BaseSetup, IVault } from "test/utils/BaseSetup.t.sol";
+import { IntegrationBaseSetup } from "test/utils/IntegrationBaseSetup.t.sol";
+import { Helpers } from "test/utils/Helpers.t.sol";
 
-contract DepositIntegrationTest is BaseSetup {
+contract DepositIntegrationTest is IntegrationBaseSetup, Helpers {
   /* ============ setUp ============ */
   function setUp() public override {
     super.setUp();
@@ -17,7 +18,8 @@ contract DepositIntegrationTest is BaseSetup {
     vm.startPrank(alice);
 
     uint256 _amount = 1000e18;
-    _deposit(_amount, alice);
+    _mint(underlyingAsset, _amount, alice);
+    _deposit(underlyingAsset, vault, _amount, alice);
 
     assertEq(IERC20(vault).balanceOf(alice), _amount);
     assertEq(vault.balanceOf(alice), _amount);
@@ -36,7 +38,8 @@ contract DepositIntegrationTest is BaseSetup {
     vm.startPrank(alice);
 
     uint256 _amount = 1000e18;
-    _sponsor(_amount, alice);
+    _mint(underlyingAsset, _amount, alice);
+    _sponsor(underlyingAsset, vault, _amount, alice);
 
     assertEq(IERC20(vault).balanceOf(alice), _amount);
     assertEq(vault.balanceOf(alice), _amount);
@@ -58,7 +61,8 @@ contract DepositIntegrationTest is BaseSetup {
     vm.startPrank(alice);
 
     uint256 _amount = 1000e18;
-    _deposit(_amount, alice);
+    _mint(underlyingAsset, _amount, alice);
+    _deposit(underlyingAsset, vault, _amount, alice);
 
     twabController.delegate(address(vault), bob);
 

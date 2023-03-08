@@ -5,9 +5,10 @@ import "forge-std/Test.sol";
 import { console2 } from "forge-std/console2.sol";
 import { ERC20Mock, IERC20 } from "openzeppelin/mocks/ERC20Mock.sol";
 
-import { BaseSetup, IVault } from "test/utils/BaseSetup.t.sol";
+import { IntegrationBaseSetup } from "test/utils/IntegrationBaseSetup.t.sol";
+import { Helpers } from "test/utils/Helpers.t.sol";
 
-contract AwardIntegrationTest is BaseSetup {
+contract AwardIntegrationTest is IntegrationBaseSetup, Helpers {
   /* ============ setUp ============ */
   function setUp() public override {
     super.setUp();
@@ -20,19 +21,27 @@ contract AwardIntegrationTest is BaseSetup {
 
     vm.startPrank(alice);
 
-    _deposit(_amount, alice);
+    _mint(underlyingAsset, _amount, alice);
+    _deposit(underlyingAsset, vault, _amount, alice);
 
     vm.stopPrank();
 
-    _accrueYield(_yield);
+    _accrueYield(underlyingAsset, vault, _yield);
+    prizeToken.mint(alice, 1000e18);
 
     vm.startPrank(alice);
 
-    (, uint256 _prizeTokenContributed) = _liquidate(_yield, alice);
+    (uint256 _alicePrizeTokenBalanceBefore, uint256 _prizeTokenContributed) = _liquidate(
+      liquidationRouter,
+      liquidationPair,
+      prizeToken,
+      _yield,
+      alice
+    );
 
     vm.stopPrank();
 
-    _award();
+    _award(prizePool, winningRandomNumber);
 
     // TODO: add tests
     // assertEq(prizePool.prizeTokenPerShare().unwrap(), 0.045454545454545454e18);

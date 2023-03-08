@@ -5,9 +5,10 @@ import "forge-std/Test.sol";
 import { console2 } from "forge-std/console2.sol";
 import { ERC20Mock, IERC20 } from "openzeppelin/mocks/ERC20Mock.sol";
 
-import { BaseSetup, IVault } from "test/utils/BaseSetup.t.sol";
+import { IntegrationBaseSetup } from "test/utils/IntegrationBaseSetup.t.sol";
+import { Helpers } from "test/utils/Helpers.t.sol";
 
-contract LiquidateIntegrationTest is BaseSetup {
+contract LiquidateIntegrationTest is IntegrationBaseSetup, Helpers {
   /* ============ setUp ============ */
   function setUp() public override {
     super.setUp();
@@ -16,17 +17,28 @@ contract LiquidateIntegrationTest is BaseSetup {
   /* ============ Tests ============ */
   function testLiquidate() external {
     uint256 _yield = 10e18;
-    _accrueYield(_yield);
+    _accrueYield(underlyingAsset, vault, _yield);
 
     vm.startPrank(alice);
 
-    (uint256 _alicePrizeTokenBalanceBefore, uint256 _prizeTokenContributed) = _liquidate(_yield, alice);
+    prizeToken.mint(alice, 1000e18);
+
+    (uint256 _alicePrizeTokenBalanceBefore, uint256 _prizeTokenContributed) = _liquidate(
+      liquidationRouter,
+      liquidationPair,
+      prizeToken,
+      _yield,
+      alice
+    );
 
     assertEq(prizeToken.balanceOf(address(prizePool)), _prizeTokenContributed);
     assertEq(prizeToken.balanceOf(alice), _alicePrizeTokenBalanceBefore - _prizeTokenContributed);
 
     // Because of the yield smooting, only 10% of the prize tokens contributed can be awarded.
-    assertEq(prizePool.getContributedBetween(address(vault), 1, 1), _prizeTokenContributed * 10 / 100);
+    assertEq(
+      prizePool.getContributedBetween(address(vault), 1, 1),
+      (_prizeTokenContributed * 10) / 100
+    );
 
     assertEq(IERC20(vault).balanceOf(alice), _yield);
     assertEq(vault.balanceOf(alice), _yield);
