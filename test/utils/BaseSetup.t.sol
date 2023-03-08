@@ -162,4 +162,30 @@ contract BaseSetup is Test {
       prizeTokenContributed
     );
   }
+
+  /* ============ Award ============ */
+  function _award() internal {
+    // twabController.getAverageBalanceBetween(address(vault), address(this), uint32(1), uint32(86401));
+    console2.log("prizePool.nextDrawStartsAt()", prizePool.nextDrawStartsAt());
+    vm.warp(prizePool.nextDrawStartsAt() + drawPeriodSeconds);
+    prizePool.completeAndStartNextDraw(winningRandomNumber);
+  }
+
+  /* ============ Claim ============ */
+  function _claim(address _user, uint8[] memory _tiers) internal returns (uint256) {
+    address[] memory _winners = new address[](1);
+    _winners[0] = _user;
+
+    vm.warp(
+      drawPeriodSeconds /
+        prizePool.estimatedPrizeCount() +
+        prizePool.lastCompletedDrawStartedAt() +
+        drawPeriodSeconds +
+        10
+    );
+
+    uint256 _claimFees = claimer.claimPrizes(IVault(address(vault)), _winners, _tiers, 0, address(this));
+
+    return _claimFees;
+  }
 }
