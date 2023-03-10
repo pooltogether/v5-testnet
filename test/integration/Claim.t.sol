@@ -31,13 +31,7 @@ contract ClaimIntegrationTest is IntegrationBaseSetup, Helpers {
 
     vm.startPrank(alice);
 
-    (uint256 _alicePrizeTokenBalanceBefore, uint256 _prizeTokenContributed) = _liquidate(
-      liquidationRouter,
-      liquidationPair,
-      prizeToken,
-      _yield,
-      alice
-    );
+    _liquidate(liquidationRouter, liquidationPair, prizeToken, _yield, alice);
 
     vm.stopPrank();
 
@@ -57,6 +51,7 @@ contract ClaimIntegrationTest is IntegrationBaseSetup, Helpers {
       prizeToken.balanceOf(alice),
       _alicePrizeTokenBalanceBeforeClaim + (_prizeSize - _claimFees)
     );
+
     assertEq(prizeToken.balanceOf(address(prizePool)), _prizePoolBalanceBeforeClaim - _prizeSize);
 
     // TODO: check that a tier that was claimed can't be claimed again

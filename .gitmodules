@@ -1,7 +1,9 @@
+[submodule "lib/ds-test"]
+	path = lib/ds-test
+	url = https://github.com/dapphub/ds-test
 [submodule "lib/forge-std"]
 	path = lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
-	branch = v1.3.0
 [submodule "lib/v5-twab-controller"]
 	path = lib/v5-twab-controller
 	url = https://github.com/pooltogether/v5-twab-controller
@@ -25,3 +27,7 @@
 [submodule "lib/v5-vault"]
 	path = lib/v5-vault
 	url = https://github.com/pooltogether/v5-vault
+[submodule "lib/v5-draw-beacon"]
+	path = lib/v5-draw-beacon
+	url = https://github.com/pooltogether/v5-draw-beacon
+	branch = pool-2596-drawbeacon-add-contract

@@ -13,10 +13,10 @@ contract Utils is Test {
   }
 
   // Create users with 100 ETH balance each
-  function createUsers(uint256 userNum) external returns (address payable[] memory) {
-    address payable[] memory users = new address payable[](userNum);
+  function createUsers(uint256 _userNum) external returns (address payable[] memory) {
+    address payable[] memory users = new address payable[](_userNum);
 
-    for (uint256 i = 0; i < userNum; i++) {
+    for (uint256 i = 0; i < _userNum; i++) {
       address payable user = this.getNextUserAddress();
       vm.deal(user, 100 ether);
       users[i] = user;
@@ -26,8 +26,8 @@ contract Utils is Test {
   }
 
   // Move block.number forward by a given number of blocks
-  function mineBlocks(uint256 numBlocks) external {
-    uint256 targetBlock = block.number + numBlocks;
+  function mineBlocks(uint256 _numBlocks) external {
+    uint256 targetBlock = block.number + _numBlocks;
     vm.roll(targetBlock);
   }
 }

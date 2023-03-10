@@ -4,6 +4,7 @@ pragma solidity 0.8.17;
 import "forge-std/Test.sol";
 import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
 import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
+import { IERC4626 } from "openzeppelin/token/ERC20/extensions/ERC4626.sol";
 
 import { Claimer, IVault } from "v5-vrgda-claimer/Claimer.sol";
 import { PrizePool } from "v5-prize-pool/PrizePool.sol";
@@ -20,12 +21,12 @@ contract Helpers is Test {
 
   function _deposit(
     IERC20 _underlyingAsset,
-    Vault _vault,
+    IERC4626 _vault,
     uint256 _amount,
     address _user
-  ) internal {
+  ) internal returns (uint256) {
     _underlyingAsset.approve(address(_vault), type(uint256).max);
-    _vault.deposit(_amount, _user);
+    return _vault.deposit(_amount, _user);
   }
 
   function _sponsor(
@@ -33,9 +34,9 @@ contract Helpers is Test {
     Vault _vault,
     uint256 _amount,
     address _user
-  ) internal {
+  ) internal returns (uint256) {
     _underlyingAsset.approve(address(_vault), type(uint256).max);
-    _vault.sponsor(_amount, _user);
+    return _vault.sponsor(_amount, _user);
   }
 
   /* ============ Liquidate ============ */
@@ -51,6 +52,9 @@ contract Helpers is Test {
     address _user
   ) internal returns (uint256 userPrizeTokenBalanceBeforeSwap, uint256 prizeTokenContributed) {
     prizeTokenContributed = _liquidationPair.computeExactAmountIn(_yield);
+    uint256 vaultShares = _liquidationPair.computeExactAmountOut(prizeTokenContributed);
+    console2.log("prizeTokenContributed", prizeTokenContributed);
+    console2.log("vaultShares", vaultShares);
 
     _prizeToken.approve(address(_liquidationRouter), prizeTokenContributed);
 
