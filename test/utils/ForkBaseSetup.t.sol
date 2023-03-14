@@ -71,7 +71,7 @@ contract ForkBaseSetup is Test {
     underlyingAssetAddress = address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48); // USDC token on Ethereum
     underlyingAsset = IERC20(underlyingAssetAddress);
 
-    prizeTokenAddress = address(0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e); // POOL token on Polygon
+    prizeTokenAddress = address(0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e); // POOL token on Ethereum
     prizeToken = IERC20(prizeTokenAddress);
 
     twabController = new TwabController();
@@ -95,7 +95,7 @@ contract ForkBaseSetup is Test {
     drawBeacon = new DrawBeacon(
       address(this),
       prizePool,
-      RNGInterface(address(0x7402d9f36904894273B31dD0d998D826c833EF93)), // RNGChainlinkV2 on Polygon
+      RNGInterface(address(0x3A06B40C67515cda47E44b57116488F73A441F72)), // RNGChainlinkV2 on Mainnet
       uint32(1),
       drawStartsAt,
       drawPeriodSeconds,
@@ -114,6 +114,8 @@ contract ForkBaseSetup is Test {
       claimer,
       address(this)
     );
+
+    vm.makePersistent(address(vault));
 
     liquidationPair = new LiquidationPair(
       ILiquidationSource(vault),

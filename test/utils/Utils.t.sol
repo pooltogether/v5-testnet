@@ -27,7 +27,6 @@ contract Utils is Test {
 
   // Move block.number forward by a given number of blocks
   function mineBlocks(uint256 _numBlocks) external {
-    uint256 targetBlock = block.number + _numBlocks;
-    vm.roll(targetBlock);
+    vm.rollFork(block.number + _numBlocks);
   }
 }

@@ -11,7 +11,6 @@ import { Helpers } from "test/utils/Helpers.t.sol";
 contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
   IERC4626 public yieldVault;
   IERC20 public aToken;
-  IERC20 public maToken;
   IERC20 public variableDebtToken;
   address public morphoPoolAddress;
 
@@ -20,12 +19,10 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
     uint256 mainnetFork = vm.createFork(vm.rpcUrl("mainnet"));
     vm.selectFork(mainnetFork);
 
-    address morphoVaultAddress = 0xA5269A8e31B93Ff27B887B56720A25F844db0529; // Morpho - Aave V2 USDC Vault on Mainnet
-    yieldVault = IERC4626(morphoVaultAddress);
-    maToken = IERC20(morphoVaultAddress); // Morpho - maUSDC token on Mainnet
-    variableDebtToken = IERC20(address(0x619beb58998eD2278e08620f97007e1116D5D25b)); // Aave - USDC VariableDebtToken on Mainnet
-    aToken = IERC20(address(0xBcca60bB61934080951369a648Fb03DF4F96263C)); // aUSDC token on Mainnet
-    morphoPoolAddress = 0x777777c9898D384F785Ee44Acfe945efDFf5f3E0; // Morpho Pool on Mainnet
+    yieldVault = IERC4626(0xA5269A8e31B93Ff27B887B56720A25F844db0529); // Morpho - Aave V2 USDC Vault on Ethereum
+    variableDebtToken = IERC20(address(0x619beb58998eD2278e08620f97007e1116D5D25b)); // Aave - USDC VariableDebtToken on Ethereum
+    aToken = IERC20(address(0xBcca60bB61934080951369a648Fb03DF4F96263C)); // aUSDC token on Ethereum
+    morphoPoolAddress = 0x777777c9898D384F785Ee44Acfe945efDFf5f3E0; // Morpho Pool on Ethereum
 
     forkSetUp(yieldVault);
   }
@@ -48,10 +45,13 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
     assertEq(twabController.delegateBalanceOf(address(vault), alice), _amount);
 
     if (_variableDebtTokenBalanceBefore < _amount) {
-      assertApproxEqAbs(aToken.balanceOf(morphoPoolAddress),  _aTokenBalanceBefore + _amount, 1);
+      assertApproxEqAbs(aToken.balanceOf(morphoPoolAddress), _aTokenBalanceBefore + _amount, 1);
     } else {
       // Part of the USDC variable debt is repayed
-      assertEq(variableDebtToken.balanceOf(morphoPoolAddress), _variableDebtTokenBalanceBefore - _amount);
+      assertEq(
+        variableDebtToken.balanceOf(morphoPoolAddress),
+        _variableDebtTokenBalanceBefore - _amount
+      );
     }
 
     // The YieldVault may round down and mint a bit less shares
@@ -80,10 +80,13 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
     assertEq(twabController.delegateBalanceOf(address(vault), SPONSORSHIP_ADDRESS), 0);
 
     if (_variableDebtTokenBalanceBefore < _amount) {
-      assertApproxEqAbs(aToken.balanceOf(morphoPoolAddress),  _aTokenBalanceBefore + _amount, 1);
+      assertApproxEqAbs(aToken.balanceOf(morphoPoolAddress), _aTokenBalanceBefore + _amount, 1);
     } else {
       // Part of the USDC variable debt is repayed
-      assertEq(variableDebtToken.balanceOf(morphoPoolAddress), _variableDebtTokenBalanceBefore - _amount);
+      assertEq(
+        variableDebtToken.balanceOf(morphoPoolAddress),
+        _variableDebtTokenBalanceBefore - _amount
+      );
     }
 
     // The YieldVault may round down and mint a bit less shares
@@ -114,10 +117,13 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
     assertEq(twabController.delegateBalanceOf(address(vault), bob), _amount);
 
     if (_variableDebtTokenBalanceBefore < _amount) {
-      assertApproxEqAbs(aToken.balanceOf(morphoPoolAddress),  _aTokenBalanceBefore + _amount, 1);
+      assertApproxEqAbs(aToken.balanceOf(morphoPoolAddress), _aTokenBalanceBefore + _amount, 1);
     } else {
       // Part of the USDC variable debt is repayed
-      assertEq(variableDebtToken.balanceOf(morphoPoolAddress), _variableDebtTokenBalanceBefore - _amount);
+      assertEq(
+        variableDebtToken.balanceOf(morphoPoolAddress),
+        _variableDebtTokenBalanceBefore - _amount
+      );
     }
 
     // The YieldVault may round down and mint a bit less shares
