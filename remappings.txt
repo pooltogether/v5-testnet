@@ -1,3 +1,17 @@
 ds-test/=lib/forge-std/lib/ds-test/src/
 forge-std/=lib/forge-std/src/
+openzeppelin/=lib/openzeppelin-contracts/contracts/
+prb-math/=lib/prb-math/src/
+
+v5-draw-beacon/=lib/v5-draw-beacon/src/
+v5-liquidator/=lib/v5-liquidator/src/
+v5-liquidator-libraries/=lib/v5-liquidator/src/libraries/
+v5-liquidator-interfaces/=lib/v5-liquidator/src/interfaces/
+v5-prize-pool/=lib/v5-prize-pool/src/
+v5-twab-controller/=lib/v5-twab-controller/src/
+v5-vault/=lib/v5-vault/src/
+v5-vault-mock/=lib/v5-vault/test/contracts/mock/
+v5-vrgda-claimer/=lib/v5-vrgda-claimer/src/
+
 src/=src/
+test/=test/
