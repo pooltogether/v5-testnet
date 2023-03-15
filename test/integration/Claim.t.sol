@@ -2,7 +2,6 @@
 pragma solidity 0.8.17;
 
 import "forge-std/Test.sol";
-import { console2 } from "forge-std/console2.sol";
 import { ERC20Mock, IERC20 } from "openzeppelin/mocks/ERC20Mock.sol";
 
 import { IntegrationBaseSetup, IVault } from "test/utils/IntegrationBaseSetup.t.sol";
@@ -21,12 +20,12 @@ contract ClaimIntegrationTest is IntegrationBaseSetup, Helpers {
 
     vm.startPrank(alice);
 
-    _mint(underlyingAsset, _amount, alice);
+    underlyingAsset.mint(alice, _amount);
     _deposit(underlyingAsset, vault, _amount, alice);
 
     vm.stopPrank();
 
-    _accrueYield(underlyingAsset, vault, _yield);
+    _accrueYield(underlyingAsset, yieldVault, _yield);
     prizeToken.mint(alice, 1000e18);
 
     vm.startPrank(alice);

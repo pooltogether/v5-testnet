@@ -2,7 +2,6 @@
 pragma solidity 0.8.17;
 
 import "forge-std/Test.sol";
-import { console2 } from "forge-std/console2.sol";
 import { ERC20Mock, IERC20 } from "openzeppelin/mocks/ERC20Mock.sol";
 
 import { IntegrationBaseSetup } from "test/utils/IntegrationBaseSetup.t.sol";
@@ -16,8 +15,13 @@ contract LiquidateIntegrationTest is IntegrationBaseSetup, Helpers {
 
   /* ============ Tests ============ */
   function testLiquidate() external {
+    uint256 _amount = 1000e18;
+
+    underlyingAsset.mint(address(this), _amount);
+    _sponsor(underlyingAsset, vault, _amount, address(this));
+
     uint256 _yield = 10e18;
-    _accrueYield(underlyingAsset, vault, _yield);
+    _accrueYield(underlyingAsset, yieldVault, _yield);
 
     vm.startPrank(alice);
 

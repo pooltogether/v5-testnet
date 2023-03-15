@@ -18,17 +18,16 @@ contract DepositIntegrationTest is IntegrationBaseSetup, Helpers {
     vm.startPrank(alice);
 
     uint256 _amount = 1000e18;
-    _mint(underlyingAsset, _amount, alice);
+    underlyingAsset.mint(alice, _amount);
+
     _deposit(underlyingAsset, vault, _amount, alice);
 
-    assertEq(IERC20(vault).balanceOf(alice), _amount);
     assertEq(vault.balanceOf(alice), _amount);
 
     assertEq(twabController.balanceOf(address(vault), alice), _amount);
     assertEq(twabController.delegateBalanceOf(address(vault), alice), _amount);
 
     assertEq(underlyingAsset.balanceOf(address(yieldVault)), _amount);
-    assertEq(IERC20(yieldVault).balanceOf(address(vault)), _amount);
     assertEq(yieldVault.balanceOf(address(vault)), _amount);
 
     vm.stopPrank();
@@ -38,10 +37,10 @@ contract DepositIntegrationTest is IntegrationBaseSetup, Helpers {
     vm.startPrank(alice);
 
     uint256 _amount = 1000e18;
-    _mint(underlyingAsset, _amount, alice);
+    underlyingAsset.mint(alice, _amount);
+
     _sponsor(underlyingAsset, vault, _amount, alice);
 
-    assertEq(IERC20(vault).balanceOf(alice), _amount);
     assertEq(vault.balanceOf(alice), _amount);
 
     assertEq(twabController.balanceOf(address(vault), alice), _amount);
@@ -51,7 +50,6 @@ contract DepositIntegrationTest is IntegrationBaseSetup, Helpers {
     assertEq(twabController.delegateBalanceOf(address(vault), SPONSORSHIP_ADDRESS), 0);
 
     assertEq(underlyingAsset.balanceOf(address(yieldVault)), _amount);
-    assertEq(IERC20(yieldVault).balanceOf(address(vault)), _amount);
     assertEq(yieldVault.balanceOf(address(vault)), _amount);
 
     vm.stopPrank();
@@ -61,25 +59,23 @@ contract DepositIntegrationTest is IntegrationBaseSetup, Helpers {
     vm.startPrank(alice);
 
     uint256 _amount = 1000e18;
-    _mint(underlyingAsset, _amount, alice);
+    underlyingAsset.mint(alice, _amount);
+
     _deposit(underlyingAsset, vault, _amount, alice);
 
     twabController.delegate(address(vault), bob);
 
-    assertEq(IERC20(vault).balanceOf(alice), _amount);
     assertEq(vault.balanceOf(alice), _amount);
 
     assertEq(twabController.balanceOf(address(vault), alice), _amount);
     assertEq(twabController.delegateBalanceOf(address(vault), alice), 0);
 
-    assertEq(IERC20(vault).balanceOf(bob), 0);
     assertEq(vault.balanceOf(bob), 0);
 
     assertEq(twabController.balanceOf(address(vault), bob), 0);
     assertEq(twabController.delegateBalanceOf(address(vault), bob), _amount);
 
     assertEq(underlyingAsset.balanceOf(address(yieldVault)), _amount);
-    assertEq(IERC20(yieldVault).balanceOf(address(vault)), _amount);
     assertEq(yieldVault.balanceOf(address(vault)), _amount);
 
     vm.stopPrank();

@@ -15,10 +15,6 @@ import { YieldVault } from "v5-vault-mock/YieldVault.sol";
 
 contract Helpers is Test {
   /* ============ Deposit ============ */
-  function _mint(ERC20Mock _underlyingAsset, uint256 _amount, address _user) internal {
-    _underlyingAsset.mint(_user, _amount);
-  }
-
   function _deposit(
     IERC20 _underlyingAsset,
     IERC4626 _vault,
@@ -40,8 +36,8 @@ contract Helpers is Test {
   }
 
   /* ============ Liquidate ============ */
-  function _accrueYield(ERC20Mock _underlyingAsset, Vault _vault, uint256 _yield) internal {
-    _mint(_underlyingAsset, _yield, address(_vault));
+  function _accrueYield(ERC20Mock _underlyingAsset, IERC4626 _yieldVault, uint256 _yield) internal {
+    _underlyingAsset.mint(address(_yieldVault), _yield);
   }
 
   function _liquidate(
