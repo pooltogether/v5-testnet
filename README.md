@@ -89,3 +89,11 @@ It will build the contracts and run the test coverage.
 You can modify it here: [.github/workflows/coverage.yml](.github/workflows/coverage.yml)
 
 For the coverage to work, you will need to setup the `MAINNET_RPC_URL` repository secret in the settings of your Github repository.
+
+## Deployment
+
+### Local
+
+Start `anvil` with the following command: `anvil -m $MNEMONIC`
+
+In another terminal window, run the following command: `npm run deploy:local`

@@ -14,6 +14,7 @@
     "clean": "forge clean",
     "compile": "forge compile",
     "coverage": "forge coverage --report lcov && lcov --extract lcov.info -o lcov.info 'src/*' && genhtml lcov.info -o coverage",
+    "deploy:local": "forge script script/Deploy.s.sol:Deploy --fork-url http://localhost:8545 --sender $SENDER --broadcast",
     "format": "prettier --config .prettierrc --write \"**/*.{json,md,sol,yml}\"",
     "format:file": "prettier --config .prettierrc --write",
     "hint": "solhint --config \"./.solhint.json\" \"{src,test}/**/*.sol\"",
