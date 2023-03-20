@@ -15,6 +15,7 @@
     "compile": "forge compile",
     "coverage": "forge coverage --report lcov && lcov --extract lcov.info -o lcov.info 'src/*' && genhtml lcov.info -o coverage",
     "deploy:local": "forge script script/Deploy.s.sol:Deploy --fork-url http://localhost:8545 --sender $SENDER --broadcast",
+    "deploy:ethGoerli": "forge script script/Deploy.s.sol:Deploy --rpc-url $GOERLI_RPC_URL --sender $SENDER --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY",
     "format": "prettier --config .prettierrc --write \"**/*.{json,md,sol,yml}\"",
     "format:file": "prettier --config .prettierrc --write",
     "gen:local": "ts-node ./script/utils/generateLocalContractList.ts",

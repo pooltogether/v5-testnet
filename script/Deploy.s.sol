@@ -119,12 +119,12 @@ contract Deploy is Script {
     YieldVaultMintRate daiLowYieldVault = _deployYieldVault(dai, "Low", "L");
     _grantMinterRole(dai, address(daiLowYieldVault));
     daiLowYieldVault.setRatePerSecond(_getRatePerSeconds(6600000000000000)); // 0.66%
-    _deployVault(daiLowYieldVault, "Low Yield", "LY");
+    _deployVault(daiLowYieldVault, " Low Yield", "LY");
 
     YieldVaultMintRate daiHighYieldVault = _deployYieldVault(dai, "High", "H");
     _grantMinterRole(dai, address(daiHighYieldVault));
     daiHighYieldVault.setRatePerSecond(_getRatePerSeconds(250000000000000000)); // 25%
-    _deployVault(daiHighYieldVault, "High Yield", "HY");
+    _deployVault(daiHighYieldVault, " High Yield", "HY");
 
     /* USDC */
     ERC20Mintable usdc = new ERC20Mintable("USD Coin", "USDC", USDC_TOKEN_DECIMAL, msg.sender);
@@ -134,12 +134,12 @@ contract Deploy is Script {
     YieldVaultMintRate usdcLowYieldVault = _deployYieldVault(usdc, "Low", "L");
     _grantMinterRole(usdc, address(usdcLowYieldVault));
     usdcLowYieldVault.setRatePerSecond(_getRatePerSeconds(13300000000000000)); // 1.33%
-    _deployVault(usdcLowYieldVault, "Low Yield", "LY");
+    _deployVault(usdcLowYieldVault, " Low Yield", "LY");
 
     YieldVaultMintRate usdcHighYieldVault = _deployYieldVault(usdc, "High", "H");
     _grantMinterRole(usdc, address(usdcHighYieldVault));
     usdcHighYieldVault.setRatePerSecond(_getRatePerSeconds(500000000000000000)); // 50%
-    _deployVault(usdcHighYieldVault, "High Yield", "HY");
+    _deployVault(usdcHighYieldVault, " High Yield", "HY");
 
     /* gUSD */
     ERC20Mintable gUSD = new ERC20Mintable("Gemini dollar", "GUSD", GUSD_TOKEN_DECIMAL, msg.sender);
