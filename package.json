@@ -17,6 +17,8 @@
     "deploy:local": "forge script script/Deploy.s.sol:Deploy --fork-url http://localhost:8545 --sender $SENDER --broadcast",
     "format": "prettier --config .prettierrc --write \"**/*.{json,md,sol,yml}\"",
     "format:file": "prettier --config .prettierrc --write",
+    "gen:local": "ts-node ./script/utils/generateLocalContractList.ts",
+    "gen:testnet": "ts-node ./script/utils/generateTestnetContractList.ts",
     "hint": "solhint --config \"./.solhint.json\" \"{src,test}/**/*.sol\"",
     "lint-staged": "lint-staged",
     "prepack": "npm run clean && npm run compile",
@@ -29,7 +31,8 @@
     "prettier": "2.8.3",
     "prettier-plugin-solidity": "1.1.1",
     "solhint": "3.3.8",
-    "solhint-plugin-prettier": "0.0.5"
+    "solhint-plugin-prettier": "0.0.5",
+    "ts-node": "10.9.1"
   },
   "files": [
     "src/**",

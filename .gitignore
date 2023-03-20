@@ -10,4 +10,5 @@ out/
 
 .DS_Store
 .envrc
+local-contracts.json
 node_modules
