@@ -20,7 +20,7 @@ contract MarketRate is AccessControl {
   /* ============ Mappings ============ */
 
   /// token => denominator => price
-  mapping(address => mapping(string => int256)) public priceFeed;
+  mapping(address => mapping(string => uint256)) public priceFeed;
 
   /* ============ Constructor ============ */
 
@@ -37,14 +37,14 @@ contract MarketRate is AccessControl {
     return _decimals;
   }
 
-  function getPrice(address _token, string memory _denominator) public view returns (int256) {
+  function getPrice(address _token, string memory _denominator) public view returns (uint256) {
     return priceFeed[_token][_denominator];
   }
 
   function setPrice(
     address _token,
     string memory _denominator,
-    int256 _price
+    uint256 _price
   ) external onlyMinterRole {
     _setPrice(_token, _denominator, _price);
   }
@@ -52,7 +52,7 @@ contract MarketRate is AccessControl {
   function setPriceBatch(
     address[] calldata _tokens,
     string memory _denominator,
-    int256[] calldata _prices
+    uint256[] calldata _prices
   ) external onlyMinterRole {
     uint256 _tokensLength = _tokens.length;
     require(_tokensLength == _prices.length, "MarketRate/array-length-mismatch");
@@ -63,7 +63,7 @@ contract MarketRate is AccessControl {
   }
 
   /* ============ Internal Functions ============ */
-  function _setPrice(address _token, string memory _denominator, int256 _price) private {
+  function _setPrice(address _token, string memory _denominator, uint256 _price) private {
     priceFeed[_token][_denominator] = _price;
   }
 

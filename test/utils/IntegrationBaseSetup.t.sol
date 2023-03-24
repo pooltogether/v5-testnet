@@ -41,6 +41,7 @@ contract IntegrationBaseSetup is Test {
   ERC20Mock public prizeToken;
 
   LiquidationRouter public liquidationRouter;
+  LiquidationPairFactory internal liquidationPairFactory;
   LiquidationPair public liquidationPair;
 
   Claimer public claimer;
@@ -114,8 +115,20 @@ contract IntegrationBaseSetup is Test {
       50e18
     );
 
+    liquidationPairFactory = new LiquidationPairFactory();
+
+    liquidationPair = liquidationPairFactory.createPair(
+      ILiquidationSource(vault),
+      address(prizeToken),
+      address(vault),
+      UFixed32x9.wrap(0.3e9),
+      UFixed32x9.wrap(0.02e9),
+      100e18,
+      50e18
+    );
+
     vault.setLiquidationPair(liquidationPair);
 
-    liquidationRouter = new LiquidationRouter(new LiquidationPairFactory());
+    liquidationRouter = new LiquidationRouter(liquidationPairFactory);
   }
 }
