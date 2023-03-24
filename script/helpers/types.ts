@@ -15,22 +15,19 @@ export type Contract = {
 export type ContractList = {
   name: string;
   version: Version;
+  timestamp: string;
   contracts: Contract[]
 }
 
 export type VaultExtensionValue = string | number | boolean | null | undefined
 
 export interface VaultExtensions {
-  readonly yieldSource: string
-  readonly underlyingAsset: {
-    readonly chainId: number
-    readonly address: `0x${string}`
-    readonly symbol: string
-    readonly name: string
-    readonly decimals: number
-    readonly logoURI?: string
+  underlyingAsset: {
+    address: `0x${string}`
+    symbol: string
+    name: string
   }
-  readonly [key: string]:
+  [key: string]:
   | {
     [key: string]:
     | {
@@ -42,12 +39,18 @@ export interface VaultExtensions {
 }
 
 export interface VaultInfo {
-  readonly chainId: number
-  readonly address: `0x${string}`
-  readonly name: string
-  readonly decimals: number
-  readonly symbol: string
-  readonly extensions: VaultExtensions
-  readonly tags?: string[]
-  readonly logoURI?: string
+  chainId: number
+  address: `0x${string}`
+  name: string
+  decimals: number
+  symbol: string
+  extensions: VaultExtensions
+}
+
+export interface VaultList {
+  name: string
+  keywords?: string[]
+  version: Version
+  timestamp: string
+  tokens: VaultInfo[]
 }

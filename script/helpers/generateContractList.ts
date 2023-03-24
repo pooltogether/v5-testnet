@@ -5,6 +5,7 @@ import {
   Contract,
   ContractList,
   VaultInfo,
+  VaultList,
   Version
 } from './types';
 
@@ -38,33 +39,30 @@ const getUnderlyingAsset = (transactions: any, underlyingAssetAddress: string) =
   }
 }
 
-const generateVaultTokens = (
+const generateVaultInfo = (
   transactions: any,
   chainId: number,
   address: `0x${string}`,
   deployArguments: string[]
-): VaultInfo[] => {
+): VaultInfo => {
   const name = deployArguments[1];
   const underlyingAssetAddress = deployArguments[0] as `0x${string}`;
   const underlyingAsset = getUnderlyingAsset(transactions, underlyingAssetAddress);
 
-  return [{
+  return {
     chainId,
     address,
     name,
     decimals: underlyingAsset.decimals,
     symbol: deployArguments[2],
     extensions: {
-      yieldSource: 'YieldVault',
       underlyingAsset: {
-        chainId,
         address: underlyingAssetAddress,
         symbol: underlyingAsset.symbol,
-        name: underlyingAsset.name,
-        decimals: underlyingAsset.decimals,
+        name: underlyingAsset.name
       }
     }
-  }]
+  }
 }
 
 const formatContract = (transactions: any, chainId: number, name: string, address: `0x${string}`, deployArguments: string[]): Contract => {
@@ -86,7 +84,7 @@ const formatContract = (transactions: any, chainId: number, name: string, addres
   if (type === 'VaultMintRate') {
     return {
       ...defaultContract,
-      tokens: generateVaultTokens(transactions, chainId, address, deployArguments)
+      tokens: [generateVaultInfo(transactions, chainId, address, deployArguments)]
     }
   } else {
     return defaultContract;
@@ -97,6 +95,7 @@ export const generateContractList = (deploymentPaths: string[]): ContractList =>
   const contractList: ContractList = {
     name: 'Hyperstructure Testnet',
     version: PACKAGE_VERSION,
+    timestamp: new Date().toISOString(),
     contracts: [],
   };
 
@@ -129,8 +128,38 @@ export const generateContractList = (deploymentPaths: string[]): ContractList =>
   return contractList;
 }
 
-export const writeContractList = (contractList: ContractList, fileName: string) => {
-  fs.writeFile(`${__dirname}/../../${fileName}.json`, JSON.stringify(contractList), (err) => {
+export const generateVaultList = (deploymentPaths: string[]): VaultList => {
+  const vaultList: VaultList = {
+    name: 'PoolTogether Testnet Vault List',
+    keywords: ['pooltogether'],
+    version: PACKAGE_VERSION,
+    timestamp: new Date().toISOString(),
+    tokens: [],
+  };
+
+  deploymentPaths.forEach((deploymentPath) => {
+    const deploymentBlob = JSON.parse(
+      fs.readFileSync(`${deploymentPath}/run-latest.json`, 'utf8'),
+    );
+
+    const chainId = deploymentBlob.chain;
+    const transactions = deploymentBlob.transactions;
+
+    transactions.forEach(({ transactionType, contractName, contractAddress, arguments: deployArguments, additionalContracts }) => {
+      if (transactionType === 'CREATE' && contractName === 'VaultMintRate') {
+        vaultList.tokens.push(generateVaultInfo(transactions, chainId, contractAddress, deployArguments));
+      }
+    });
+  });
+
+  return vaultList;
+}
+
+export const writeList = (list: ContractList | VaultList, folderName: string, fileName: string) => {
+  const dirpath = `${__dirname}/../../${folderName}`;
+
+  fs.mkdirSync(dirpath, { recursive: true });
+  fs.writeFile(`${dirpath}/${fileName}.json`, JSON.stringify(list), (err) => {
     if (err) {
       console.error(err);
       return;
