@@ -1,18 +1,19 @@
 import {
   generateContractList,
   generateVaultList,
+  rootFolder,
   writeList,
 } from "../helpers/generateContractList";
 
-const stableTokenDeploymentPath = `${__dirname}/../../broadcast/DeployStableToken.s.sol/31337`;
-const tokenDeploymentPath = `${__dirname}/../../broadcast/DeployToken.s.sol/31337`;
-const vaultDeploymentPath = `${__dirname}/../../broadcast/DeployVault.s.sol/31337`;
+const stableTokenDeploymentPath = `${rootFolder}/broadcast/DeployStableToken.s.sol/31337`;
+const tokenDeploymentPath = `${rootFolder}/broadcast/DeployToken.s.sol/31337`;
+const vaultDeploymentPath = `${rootFolder}/broadcast/DeployVault.s.sol/31337`;
 
 const deploymentPaths = [
   stableTokenDeploymentPath,
   tokenDeploymentPath,
-  `${__dirname}/../../broadcast/DeployPool.s.sol/31337`,
-  `${__dirname}/../../broadcast/DeployYieldVault.s.sol/31337`,
+  `${rootFolder}/broadcast/DeployPool.s.sol/31337`,
+  `${rootFolder}/broadcast/DeployYieldVault.s.sol/31337`,
   vaultDeploymentPath,
 ];
 

@@ -12,6 +12,8 @@ const PACKAGE_VERSION: Version = {
   patch: Number(patchSplit[0]),
 };
 
+export const rootFolder = `${__dirname}/../..`;
+
 const renameType = (type: string) => {
   switch (type) {
     case "YieldVaultMintRate":
@@ -22,6 +24,9 @@ const renameType = (type: string) => {
       return type;
   }
 };
+
+const getAbi = (type: string) =>
+  JSON.parse(fs.readFileSync(`${rootFolder}/out/${type}.sol/${type}.json`, "utf8")).abi;
 
 const getBlob = (path: string) => JSON.parse(fs.readFileSync(`${path}/run-latest.json`, "utf8"));
 
@@ -84,6 +89,7 @@ const formatContract = (
       patch: Number(version[2]) || 0,
     },
     type: renameType(type),
+    abi: getAbi(type),
   };
 
   if (type === "VaultMintRate") {
@@ -190,7 +196,7 @@ export const generateVaultList = (
 };
 
 export const writeList = (list: ContractList | VaultList, folderName: string, fileName: string) => {
-  const dirpath = `${__dirname}/../../${folderName}`;
+  const dirpath = `${rootFolder}/${folderName}`;
 
   fs.mkdirSync(dirpath, { recursive: true });
   fs.writeFile(`${dirpath}/${fileName}.json`, JSON.stringify(list), (err) => {
