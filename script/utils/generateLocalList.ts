@@ -1,10 +1,26 @@
-import { generateContractList, generateVaultList, writeList } from '../helpers/generateContractList';
+import {
+  generateContractList,
+  generateVaultList,
+  writeList,
+} from "../helpers/generateContractList";
 
-const localDeployments = `${__dirname}/../../broadcast/Deploy.s.sol/31337`;
+const stableTokenDeploymentPath = `${__dirname}/../../broadcast/DeployStableToken.s.sol/31337`;
+const tokenDeploymentPath = `${__dirname}/../../broadcast/DeployToken.s.sol/31337`;
+const vaultDeploymentPath = `${__dirname}/../../broadcast/DeployVault.s.sol/31337`;
 
 const deploymentPaths = [
-  localDeployments
+  stableTokenDeploymentPath,
+  tokenDeploymentPath,
+  `${__dirname}/../../broadcast/DeployPool.s.sol/31337`,
+  `${__dirname}/../../broadcast/DeployYieldVault.s.sol/31337`,
+  vaultDeploymentPath,
 ];
 
-writeList(generateContractList(deploymentPaths), 'deployments/local', 'contracts');
-writeList(generateVaultList(deploymentPaths), 'deployments/local', 'vaults');
+const tokenDeploymentPaths = [stableTokenDeploymentPath, tokenDeploymentPath];
+
+writeList(generateContractList(deploymentPaths), "deployments/local", "contracts");
+writeList(
+  generateVaultList(vaultDeploymentPath, tokenDeploymentPaths),
+  "deployments/local",
+  "vaults"
+);

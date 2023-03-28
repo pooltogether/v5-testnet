@@ -96,7 +96,9 @@ For the coverage to work, you will need to setup the `MAINNET_RPC_URL` repositor
 
 Start `anvil` with the following command: `anvil -m $MNEMONIC`
 
-In another terminal window, run the following command: `npm run deploy:local`
+In another terminal window, run the following command: `npm run deploy:contracts:local`
+
+Then configure the contracts: `npm run deploy:config-contracts:local`
 
 ### Testnet
 
@@ -104,7 +106,9 @@ Use one of the following commands to deploy on the testnet of your choice.
 
 #### Ethereum Goerli
 
-`npm run deploy:ethGoerli`
+`npm run deploy:contracts:ethGoerli`
+
+Then configure the contracts: `npm run deploy:config-contracts:ethGoerli`
 
 ### Contract List
 

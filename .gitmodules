@@ -32,3 +32,6 @@
 	path = lib/v5-draw-beacon
 	url = https://github.com/pooltogether/v5-draw-beacon
 	branch = pool-2596-drawbeacon-add-contract
+[submodule "lib/solidity-stringutils"]
+	path = lib/solidity-stringutils
+	url = https://github.com/Arachnid/solidity-stringutils

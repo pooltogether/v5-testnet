@@ -1,16 +1,10 @@
-import * as fs from 'fs';
-import npmPackage from '../../package.json';
+import * as fs from "fs";
+import npmPackage from "../../package.json";
 
-import {
-  Contract,
-  ContractList,
-  VaultInfo,
-  VaultList,
-  Version
-} from './types';
+import { Contract, ContractList, VaultInfo, VaultList, Version } from "./types";
 
-const versionSplit = npmPackage.version.split('.');
-const patchSplit = versionSplit[2].split('-');
+const versionSplit = npmPackage.version.split(".");
+const patchSplit = versionSplit[2].split("-");
 
 const PACKAGE_VERSION: Version = {
   major: Number(versionSplit[0]),
@@ -20,24 +14,29 @@ const PACKAGE_VERSION: Version = {
 
 const renameType = (type: string) => {
   switch (type) {
-    case 'YieldVaultMintRate':
-      return 'YieldVault';
-    case 'VaultMintRate':
-      return 'Vault';
+    case "YieldVaultMintRate":
+      return "YieldVault";
+    case "VaultMintRate":
+      return "Vault";
     default:
       return type;
   }
-}
+};
+
+const getBlob = (path: string) => JSON.parse(fs.readFileSync(`${path}/run-latest.json`, "utf8"));
 
 const getUnderlyingAsset = (transactions: any, underlyingAssetAddress: string) => {
-  const deployArguments = transactions.find((transaction: { contractAddress: string; }) => transaction.contractAddress === underlyingAssetAddress).arguments;
+  const deployArguments = transactions.find(
+    (transaction: { contractAddress: string }) =>
+      transaction.contractAddress === underlyingAssetAddress
+  ).arguments;
 
   return {
     name: deployArguments[0],
     symbol: deployArguments[1],
     decimals: Number(deployArguments[2]),
-  }
-}
+  };
+};
 
 const generateVaultInfo = (
   transactions: any,
@@ -59,15 +58,21 @@ const generateVaultInfo = (
       underlyingAsset: {
         address: underlyingAssetAddress,
         symbol: underlyingAsset.symbol,
-        name: underlyingAsset.name
-      }
-    }
-  }
-}
+        name: underlyingAsset.name,
+      },
+    },
+  };
+};
 
-const formatContract = (transactions: any, chainId: number, name: string, address: `0x${string}`, deployArguments: string[]): Contract => {
+const formatContract = (
+  tokenTransactions: any,
+  chainId: number,
+  name: string,
+  address: `0x${string}`,
+  deployArguments: string[]
+): Contract => {
   const regex = /V[1-9+]((.{0,2}[0-9+]){0,2})$/g;
-  const version = name.match(regex)?.[0]?.slice(1).split('.') || [1, 0, 0];
+  const version = name.match(regex)?.[0]?.slice(1).split(".") || [1, 0, 0];
   const type = name.split(regex)[0];
 
   const defaultContract = {
@@ -79,13 +84,13 @@ const formatContract = (transactions: any, chainId: number, name: string, addres
       patch: Number(version[2]) || 0,
     },
     type: renameType(type),
-  }
+  };
 
-  if (type === 'VaultMintRate') {
+  if (type === "VaultMintRate") {
     return {
       ...defaultContract,
-      tokens: [generateVaultInfo(transactions, chainId, address, deployArguments)]
-    }
+      tokens: [generateVaultInfo(tokenTransactions, chainId, address, deployArguments)],
+    };
   } else {
     return defaultContract;
   }
@@ -93,67 +98,96 @@ const formatContract = (transactions: any, chainId: number, name: string, addres
 
 export const generateContractList = (deploymentPaths: string[]): ContractList => {
   const contractList: ContractList = {
-    name: 'Hyperstructure Testnet',
+    name: "Hyperstructure Testnet",
     version: PACKAGE_VERSION,
     timestamp: new Date().toISOString(),
     contracts: [],
   };
 
-  deploymentPaths.forEach((deploymentPath) => {
-    const deploymentBlob = JSON.parse(
-      fs.readFileSync(`${deploymentPath}/run-latest.json`, 'utf8'),
-    );
+  const { transactions: stableTokenTransactions } = getBlob(deploymentPaths[0]);
+  let { transactions: tokenTransactions } = getBlob(deploymentPaths[1]);
 
+  tokenTransactions = stableTokenTransactions.concat(tokenTransactions);
+
+  deploymentPaths.forEach((deploymentPath) => {
+    const deploymentBlob = getBlob(deploymentPath);
     const chainId = deploymentBlob.chain;
     const transactions = deploymentBlob.transactions;
 
-    transactions.forEach(({ transactionType, contractName, contractAddress, arguments: deployArguments, additionalContracts }) => {
-      const createdContract = additionalContracts[0];
+    transactions.forEach(
+      ({
+        transactionType,
+        contractName,
+        contractAddress,
+        arguments: deployArguments,
+        additionalContracts,
+      }) => {
+        const createdContract = additionalContracts[0];
 
-      if (transactionType == 'CALL' && createdContract && createdContract.transactionType === 'CREATE') {
-        transactionType = 'CREATE';
-        contractAddress = createdContract.address;
+        if (
+          transactionType == "CALL" &&
+          createdContract &&
+          createdContract.transactionType === "CREATE"
+        ) {
+          transactionType = "CREATE";
+          contractAddress = createdContract.address;
 
-        if (contractName === 'LiquidationPairFactory') {
-          contractName = 'LiquidationPair';
+          if (contractName === null) {
+            contractName = "LiquidationPair";
+          }
+        }
+
+        if (transactionType === "CREATE") {
+          contractList.contracts.push(
+            formatContract(
+              tokenTransactions,
+              chainId,
+              contractName,
+              contractAddress,
+              deployArguments
+            )
+          );
         }
       }
-
-      if (transactionType === 'CREATE') {
-        contractList.contracts.push(formatContract(transactions, chainId, contractName, contractAddress, deployArguments));
-      }
-    });
+    );
   });
 
   return contractList;
-}
+};
 
-export const generateVaultList = (deploymentPaths: string[]): VaultList => {
+export const generateVaultList = (
+  vaultDeploymentPath: string,
+  tokenDeploymentPaths: string[]
+): VaultList => {
   const vaultList: VaultList = {
-    name: 'PoolTogether Testnet Vault List',
-    keywords: ['pooltogether'],
+    name: "PoolTogether Testnet Vault List",
+    keywords: ["pooltogether"],
     version: PACKAGE_VERSION,
     timestamp: new Date().toISOString(),
     tokens: [],
   };
 
-  deploymentPaths.forEach((deploymentPath) => {
-    const deploymentBlob = JSON.parse(
-      fs.readFileSync(`${deploymentPath}/run-latest.json`, 'utf8'),
-    );
+  const { transactions: stableTokenTransactions } = getBlob(tokenDeploymentPaths[0]);
+  let { transactions: tokenTransactions } = getBlob(tokenDeploymentPaths[1]);
 
-    const chainId = deploymentBlob.chain;
-    const transactions = deploymentBlob.transactions;
+  tokenTransactions = stableTokenTransactions.concat(tokenTransactions);
 
-    transactions.forEach(({ transactionType, contractName, contractAddress, arguments: deployArguments, additionalContracts }) => {
-      if (transactionType === 'CREATE' && contractName === 'VaultMintRate') {
-        vaultList.tokens.push(generateVaultInfo(transactions, chainId, contractAddress, deployArguments));
+  const vaultDeploymentBlob = getBlob(vaultDeploymentPath);
+  const chainId = vaultDeploymentBlob.chain;
+  const vaultTransactions = vaultDeploymentBlob.transactions;
+
+  vaultTransactions.forEach(
+    ({ transactionType, contractName, contractAddress, arguments: deployArguments }) => {
+      if (transactionType === "CREATE" && contractName === "VaultMintRate") {
+        vaultList.tokens.push(
+          generateVaultInfo(tokenTransactions, chainId, contractAddress, deployArguments)
+        );
       }
-    });
-  });
+    }
+  );
 
   return vaultList;
-}
+};
 
 export const writeList = (list: ContractList | VaultList, folderName: string, fileName: string) => {
   const dirpath = `${__dirname}/../../${folderName}`;
@@ -165,4 +199,4 @@ export const writeList = (list: ContractList | VaultList, folderName: string, fi
       return;
     }
   });
-}
+};
