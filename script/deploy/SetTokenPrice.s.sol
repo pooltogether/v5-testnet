@@ -34,7 +34,7 @@ contract SetTokenPrice is Helpers {
 
     /* prizeToken */
     ERC20Mintable prizeToken = _getToken("POOL", _tokenDeployPath);
-    marketRate.setPrice(address(prizeToken), _denominator, PRIZE_TOKEN_PRICE);
+    marketRate.setPrice(address(prizeToken), _denominator, POOL_PRICE);
   }
 
   function run() public {
