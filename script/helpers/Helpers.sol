@@ -14,6 +14,7 @@ import { TwabController } from "v5-twab-controller/TwabController.sol";
 import { ERC20Mintable } from "src/ERC20Mintable.sol";
 import { MarketRate } from "src/MarketRate.sol";
 import { TokenFaucet } from "src/TokenFaucet.sol";
+import { VaultMintRate } from "src/VaultMintRate.sol";
 import { YieldVaultMintRate } from "src/YieldVaultMintRate.sol";
 
 // Testnet deployment paths
@@ -68,8 +69,8 @@ abstract contract Helpers is Script {
     _token.grantRole(_token.MINTER_ROLE(), _grantee);
   }
 
-  function _yieldVaultGrantMinterRole(YieldVaultMintRate _vault, address _grantee) internal {
-    _vault.grantRole(_vault.MINTER_ROLE(), _grantee);
+  function _yieldVaultGrantMinterRole(YieldVaultMintRate _yieldVault, address _grantee) internal {
+    _yieldVault.grantRole(_yieldVault.MINTER_ROLE(), _grantee);
   }
 
   function _tokenGrantMinterRoles(ERC20Mintable _token) internal {
@@ -79,11 +80,11 @@ abstract contract Helpers is Script {
     _tokenGrantMinterRole(_token, address(0x27fcf06DcFFdDB6Ec5F62D466987e863ec6aE6A0));
   }
 
-  function _yieldVaultGrantMinterRoles(YieldVaultMintRate _vault) internal {
-    _yieldVaultGrantMinterRole(_vault, address(0x22f928063d7FA5a90f4fd7949bB0848aF7C79b0A));
-    _yieldVaultGrantMinterRole(_vault, address(0x5E6CC2397EcB33e6041C15360E17c777555A5E63));
-    _yieldVaultGrantMinterRole(_vault, address(0xA57D294c3a11fB542D524062aE4C5100E0E373Ec));
-    _yieldVaultGrantMinterRole(_vault, address(0x27fcf06DcFFdDB6Ec5F62D466987e863ec6aE6A0));
+  function _yieldVaultGrantMinterRoles(YieldVaultMintRate _yieldVault) internal {
+    _yieldVaultGrantMinterRole(_yieldVault, address(0x22f928063d7FA5a90f4fd7949bB0848aF7C79b0A));
+    _yieldVaultGrantMinterRole(_yieldVault, address(0x5E6CC2397EcB33e6041C15360E17c777555A5E63));
+    _yieldVaultGrantMinterRole(_yieldVault, address(0xA57D294c3a11fB542D524062aE4C5100E0E373Ec));
+    _yieldVaultGrantMinterRole(_yieldVault, address(0x27fcf06DcFFdDB6Ec5F62D466987e863ec6aE6A0));
   }
 
   function _getDeploymentArtifacts(
@@ -300,6 +301,19 @@ abstract contract Helpers is Script {
     return
       ERC20Mintable(
         _getTokenAddress("ERC20Mintable", _tokenSymbol, 1, _artifactsPath, "token-not-found")
+      );
+  }
+
+  function _getVault(string memory _tokenSymbol) internal returns (VaultMintRate) {
+    return
+      VaultMintRate(
+        _getTokenAddress(
+          "VaultMintRate",
+          _tokenSymbol,
+          2,
+          _getDeployPath("DeployVault.s.sol"),
+          "vault-not-found"
+        )
       );
   }
 
