@@ -34,6 +34,7 @@ abstract contract Helpers is Script {
   uint256 internal constant DAI_PRICE = 100000000;
   uint256 internal constant USDC_PRICE = 100000000;
   uint256 internal constant GUSD_PRICE = 100000000;
+  uint256 internal constant POOL_PRICE = 100000000;
   uint256 internal constant WBTC_PRICE = 2488023943815;
   uint256 internal constant ETH_PRICE = 166876925050;
   uint256 internal constant PRIZE_TOKEN_PRICE = 1e18;
