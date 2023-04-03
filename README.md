@@ -89,3 +89,29 @@ It will build the contracts and run the test coverage.
 You can modify it here: [.github/workflows/coverage.yml](.github/workflows/coverage.yml)
 
 For the coverage to work, you will need to setup the `MAINNET_RPC_URL` repository secret in the settings of your Github repository.
+
+## Deployment
+
+### Local
+
+Start `anvil` with the following command: `anvil -m $MNEMONIC`
+
+In another terminal window, run the following command: `npm run deploy:contracts:local`
+
+Then configure the contracts: `npm run deploy:config-contracts:local`
+
+### Testnet
+
+Use one of the following commands to deploy on the testnet of your choice.
+
+#### Ethereum Goerli
+
+`npm run deploy:contracts:ethGoerli`
+
+Then configure the contracts: `npm run deploy:config-contracts:ethGoerli`
+
+### Contract List
+
+To generate the local contract list, run the following command: `npm run gen:local`
+
+To generate the testnet contract list, run the following command: `npm run gen:testnet`

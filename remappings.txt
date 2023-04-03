@@ -13,5 +13,6 @@ v5-vault/=lib/v5-vault/src/
 v5-vault-mock/=lib/v5-vault/test/contracts/mock/
 v5-vrgda-claimer/=lib/v5-vrgda-claimer/src/
 
+script/=script/
 src/=src/
 test/=test/
