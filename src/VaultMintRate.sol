@@ -19,8 +19,23 @@ contract VaultMintRate is Vault {
     IERC4626 _yieldVault,
     PrizePool _prizePool,
     Claimer _claimer,
+    address _yieldFeeRecipient,
+    uint256 _yieldFeePercentage,
     address _owner
-  ) Vault(_asset, _name, _symbol, _twabController, _yieldVault, _prizePool, _claimer, _owner) {}
+  )
+    Vault(
+      _asset,
+      _name,
+      _symbol,
+      _twabController,
+      _yieldVault,
+      _prizePool,
+      _claimer,
+      _yieldFeeRecipient,
+      _yieldFeePercentage,
+      _owner
+    )
+  {}
 
   function liquidate(
     address _account,

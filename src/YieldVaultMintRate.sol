@@ -2,11 +2,11 @@
 pragma solidity 0.8.17;
 
 import { AccessControl } from "openzeppelin/access/AccessControl.sol";
-import { ERC20, ERC4626Mock, IERC20, IERC20Metadata } from "openzeppelin/mocks/ERC4626Mock.sol";
+import { ERC20, ERC4626, IERC20, IERC20Metadata } from "openzeppelin/token/ERC20/extensions/ERC4626.sol";
 
 import { ERC20Mintable } from "src/ERC20Mintable.sol";
 
-contract YieldVaultMintRate is ERC4626Mock, AccessControl {
+contract YieldVaultMintRate is ERC4626, AccessControl {
   /* ============ Variables ============ */
 
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -21,7 +21,7 @@ contract YieldVaultMintRate is ERC4626Mock, AccessControl {
     string memory _name,
     string memory _symbol,
     address _owner
-  ) ERC4626Mock(_asset, _name, _symbol) {
+  ) ERC20(_name, _symbol) ERC4626(IERC20(_asset)) {
     _grantRole(DEFAULT_ADMIN_ROLE, _owner);
     _grantRole(MINTER_ROLE, _owner);
   }

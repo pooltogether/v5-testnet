@@ -10,20 +10,30 @@ import { ILiquidationSource } from "v5-liquidator/interfaces/ILiquidationSource.
 import { LiquidationPair } from "v5-liquidator/LiquidationPair.sol";
 import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";
 import { LiquidationRouter } from "v5-liquidator/LiquidationRouter.sol";
-import { UFixed32x9 } from "v5-liquidator-libraries/FixedMathLib.sol";
+import { UFixed32x4 } from "v5-liquidator-libraries/FixedMathLib.sol";
 
 import { ERC20Mintable } from "src/ERC20Mintable.sol";
 import { VaultMintRate } from "src/VaultMintRate.sol";
 import { ERC20, YieldVaultMintRate } from "src/YieldVaultMintRate.sol";
 
+import { console2 } from "forge-std/Test.sol";
+
 import { Helpers } from "script/helpers/Helpers.sol";
 
 contract DeployVault is Helpers {
+  function _getMinK(
+    uint128 _virtualReserveIn,
+    uint128 _virtualReserveOut
+  ) internal pure returns (uint256 minK) {
+    return (uint256(_virtualReserveIn * _virtualReserveOut) * 0.8e18) / 1e18;
+  }
+
   function _deployVault(
     YieldVaultMintRate _yieldVault,
     string memory _nameSuffix,
     string memory _symbolSuffix,
-    uint128 _virtualReserveOut
+    uint128 _virtualReserveOut,
+    uint256 _minK
   ) internal returns (VaultMintRate vault) {
     ERC20 _underlyingAsset = ERC20(_yieldVault.asset());
     string memory _underlyingAssetName = _underlyingAsset.name();
@@ -37,51 +47,99 @@ contract DeployVault is Helpers {
       _yieldVault,
       _getPrizePool(),
       _getClaimer(),
+      msg.sender,
+      100000000, // 0.1 = 10%
       msg.sender
     );
 
-    ERC20Mintable _prizeToken = _getToken("POOL", _tokenDeployPath);
     LiquidationPairFactory _liquidationPairFactory = _getLiquidationPairFactory();
 
-    LiquidationPair liquidationPair = _liquidationPairFactory.createPair(
+    LiquidationPair _liquidationPair = _liquidationPairFactory.createPair(
       ILiquidationSource(vault),
-      address(_prizeToken),
+      address(_getToken("POOL", _tokenDeployPath)),
       address(vault),
-      UFixed32x9.wrap(0.3e9),
-      UFixed32x9.wrap(0.02e9),
+      UFixed32x4.wrap(0.3e4),
+      UFixed32x4.wrap(0.02e4),
       1e18,
-      _virtualReserveOut
+      _virtualReserveOut,
+      _minK
     );
 
-    vault.setLiquidationPair(liquidationPair);
+    vault.setLiquidationPair(_liquidationPair);
   }
 
   function _deployVaults() internal {
     /* DAI */
-    YieldVaultMintRate daiLowYieldVault = _getYieldVault("PTDAILY");
-    _deployVault(daiLowYieldVault, " Low Yield", "LY", _getExchangeRate(DAI_PRICE, 0));
+    uint128 _virtualReserveIn = 1e18;
+    uint128 _virtualReserveOutDai = _getExchangeRate(DAI_PRICE, 0);
 
-    YieldVaultMintRate daiHighYieldVault = _getYieldVault("PTDAIHY");
-    _deployVault(daiHighYieldVault, " High Yield", "HY", _getExchangeRate(DAI_PRICE, 0));
+    _deployVault(
+      _getYieldVault("PTDAILY"),
+      " Low Yield",
+      "LY",
+      _virtualReserveOutDai,
+      _getMinK(_virtualReserveIn, _virtualReserveOutDai)
+    );
+
+    _deployVault(
+      _getYieldVault("PTDAIHY"),
+      " High Yield",
+      "HY",
+      _virtualReserveOutDai,
+      _getMinK(_virtualReserveIn, _virtualReserveOutDai)
+    );
 
     /* USDC */
-    YieldVaultMintRate usdcLowYieldVault = _getYieldVault("PTUSDCLY");
-    _deployVault(usdcLowYieldVault, " Low Yield", "LY", _getExchangeRate(USDC_PRICE, 12));
+    uint128 _virtualReserveOutUsdc = _getExchangeRate(USDC_PRICE, 12);
 
-    YieldVaultMintRate usdcHighYieldVault = _getYieldVault("PTUSDCHY");
-    _deployVault(usdcHighYieldVault, " High Yield", "HY", _getExchangeRate(USDC_PRICE, 12));
+    _deployVault(
+      _getYieldVault("PTUSDCLY"),
+      " Low Yield",
+      "LY",
+      _virtualReserveOutUsdc,
+      _getMinK(_virtualReserveIn, _virtualReserveOutUsdc)
+    );
+
+    _deployVault(
+      _getYieldVault("PTUSDCHY"),
+      " High Yield",
+      "HY",
+      _virtualReserveOutUsdc,
+      _getMinK(_virtualReserveIn, _virtualReserveOutUsdc)
+    );
 
     /* gUSD */
-    YieldVaultMintRate gUSDYieldVault = _getYieldVault("PTGUSDY");
-    _deployVault(gUSDYieldVault, "", "", _getExchangeRate(GUSD_PRICE, 16));
+    uint128 _virtualReserveOutGusd = _getExchangeRate(GUSD_PRICE, 16);
+
+    _deployVault(
+      _getYieldVault("PTGUSDY"),
+      "",
+      "",
+      _virtualReserveOutGusd,
+      _getMinK(_virtualReserveIn, _virtualReserveOutGusd)
+    );
 
     /* wBTC */
-    YieldVaultMintRate wBTCYieldVault = _getYieldVault("PTWBTCY");
-    _deployVault(wBTCYieldVault, "", "", _getExchangeRate(WBTC_PRICE, 10));
+    uint128 _virtualReserveOutWBtc = _getExchangeRate(WBTC_PRICE, 10);
+
+    _deployVault(
+      _getYieldVault("PTWBTCY"),
+      "",
+      "",
+      _virtualReserveOutWBtc,
+      _getMinK(_virtualReserveIn, _virtualReserveOutWBtc)
+    );
 
     /* wETH */
-    YieldVaultMintRate wETHYieldVault = _getYieldVault("PTWETHY");
-    _deployVault(wETHYieldVault, "", "", _getExchangeRate(ETH_PRICE, 0));
+    uint128 _virtualReserveOutWEth = _getExchangeRate(ETH_PRICE, 0);
+
+    _deployVault(
+      _getYieldVault("PTWETHY"),
+      "",
+      "",
+      _virtualReserveOutWEth,
+      _getMinK(_virtualReserveIn, _virtualReserveOutWEth)
+    );
   }
 
   function run() public {

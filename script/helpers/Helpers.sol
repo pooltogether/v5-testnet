@@ -228,7 +228,7 @@ abstract contract Helpers is Script {
     revert(_errorMsg);
   }
 
-  function _getDeployPath(string memory _deployPath) internal returns (string memory) {
+  function _getDeployPath(string memory _deployPath) internal view returns (string memory) {
     return
       block.chainid == 31337
         ? string.concat("/broadcast/", _deployPath, "/31337/")
