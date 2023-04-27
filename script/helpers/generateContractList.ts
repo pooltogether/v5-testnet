@@ -138,7 +138,7 @@ export const generateContractList = (deploymentPaths: string[]): ContractList =>
           transactionType = "CREATE";
           contractAddress = createdContract.address;
 
-          if (contractName === null) {
+          if (contractName === "LiquidationPairFactory") {
             contractName = "LiquidationPair";
           }
         }

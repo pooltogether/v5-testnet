@@ -127,7 +127,7 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
     }
 
     // The YieldVault may round down and mint a bit less shares
-    assertApproxEqAbs(yieldVault.convertToAssets(yieldVault.balanceOf(address(vault))), _amount, 1);
+    assertApproxEqAbs(yieldVault.maxWithdraw(address(vault)), _amount, 1);
 
     vm.stopPrank();
   }

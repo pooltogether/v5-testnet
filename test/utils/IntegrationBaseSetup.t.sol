@@ -85,6 +85,8 @@ contract IntegrationBaseSetup is Test {
       sd1x18(0.9e18) // alpha
     );
 
+    prizePool.setManager(address(this));
+
     claimer = new Claimer(prizePool, 0.0001e18, 1000e18, drawPeriodSeconds, ud2x18(0.5e18));
 
     yieldVault = new YieldVault(

@@ -54,7 +54,7 @@ contract ClaimIntegrationTest is IntegrationBaseSetup, Helpers {
       _alicePrizeTokenBalanceBeforeClaim + (_prizeSize - _claimFees)
     );
 
-    assertEq(prizeToken.balanceOf(address(prizePool)), _prizePoolBalanceBeforeClaim - _prizeSize);
+    assertEq(prizeToken.balanceOf(address(prizePool)), _prizePoolBalanceBeforeClaim - (_prizeSize - _claimFees));
 
     // TODO: check that a tier that was claimed can't be claimed again
     // vm.expectRevert("");
