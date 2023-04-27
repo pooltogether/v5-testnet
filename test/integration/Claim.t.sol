@@ -31,7 +31,9 @@ contract ClaimIntegrationTest is IntegrationBaseSetup, Helpers {
 
     vm.startPrank(alice);
 
-    _liquidate(liquidationRouter, liquidationPair, prizeToken, _yield, alice);
+    uint256 maxAmountOut = liquidationPair.maxAmountOut();
+
+    _liquidate(liquidationRouter, liquidationPair, prizeToken, maxAmountOut, alice);
 
     vm.stopPrank();
 

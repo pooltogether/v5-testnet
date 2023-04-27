@@ -47,7 +47,7 @@ contract Helpers is Test {
     uint256 _yield,
     address _user
   ) internal returns (uint256 userPrizeTokenBalanceBeforeSwap, uint256 prizeTokenContributed) {
-    prizeTokenContributed = _liquidationPair.computeExactAmountIn(_yield);
+    maxPrizeTokenContributed = _liquidationPair.computeExactAmountIn(_yield);
     uint256 vaultShares = _liquidationPair.computeExactAmountOut(prizeTokenContributed);
     console2.log("prizeTokenContributed", prizeTokenContributed);
     console2.log("vaultShares", vaultShares);
@@ -56,7 +56,12 @@ contract Helpers is Test {
 
     userPrizeTokenBalanceBeforeSwap = _prizeToken.balanceOf(_user);
 
-    _liquidationRouter.swapExactAmountOut(_liquidationPair, _user, _yield, prizeTokenContributed);
+    prizeTokenContributed = _liquidationRouter.swapExactAmountOut(
+      _liquidationPair,
+      _user,
+      _yield,
+      maxPrizeTokenContributed
+    );
   }
 
   /* ============ Award ============ */

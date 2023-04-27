@@ -110,7 +110,7 @@ contract IntegrationBaseSetup is Test {
 
     uint128 _virtualReserveIn = 10e18;
     uint128 _virtualReserveOut = 5e18;
-    uint256 _minK = (uint256(_virtualReserveIn * _virtualReserveOut) * 0.8e18) / 1e18;
+    uint256 _minK = (uint256(_virtualReserveIn) * _virtualReserveOut * 0.8e18) / 1e18;
 
     liquidationPair = liquidationPairFactory.createPair(
       ILiquidationSource(vault),

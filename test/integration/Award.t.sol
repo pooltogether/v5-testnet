@@ -29,13 +29,15 @@ contract AwardIntegrationTest is IntegrationBaseSetup, Helpers {
     _accrueYield(underlyingAsset, yieldVault, _yield);
     prizeToken.mint(alice, 1000e18);
 
+    uint256 maxAmountOut = liquidationPair.maxAmountOut();
+
     vm.startPrank(alice);
 
     (uint256 _alicePrizeTokenBalanceBefore, uint256 _prizeTokenContributed) = _liquidate(
       liquidationRouter,
       liquidationPair,
       prizeToken,
-      _yield,
+      maxAmountOut,
       alice
     );
 

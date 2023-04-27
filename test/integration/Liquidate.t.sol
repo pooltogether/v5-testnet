@@ -28,11 +28,13 @@ contract LiquidateIntegrationTest is IntegrationBaseSetup, Helpers {
 
     prizeToken.mint(alice, 1000e18);
 
+    uint256 maxAmountOut = liquidationPair.maxAmountOut();
+
     (uint256 _alicePrizeTokenBalanceBefore, uint256 _prizeTokenContributed) = _liquidate(
       liquidationRouter,
       liquidationPair,
       prizeToken,
-      _yield,
+      maxAmountOut,
       alice
     );
 
@@ -45,8 +47,8 @@ contract LiquidateIntegrationTest is IntegrationBaseSetup, Helpers {
       (_prizeTokenContributed * 10) / 100
     );
 
-    assertEq(IERC20(vault).balanceOf(alice), _yield);
-    assertEq(vault.balanceOf(alice), _yield);
+    assertEq(IERC20(vault).balanceOf(alice), maxAmountOut);
+    assertEq(vault.balanceOf(alice), maxAmountOut);
 
     vm.stopPrank();
   }
