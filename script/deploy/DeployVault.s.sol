@@ -16,8 +16,6 @@ import { ERC20Mintable } from "src/ERC20Mintable.sol";
 import { VaultMintRate } from "src/VaultMintRate.sol";
 import { ERC20, YieldVaultMintRate } from "src/YieldVaultMintRate.sol";
 
-import { console2 } from "forge-std/Test.sol";
-
 import { Helpers } from "script/helpers/Helpers.sol";
 
 contract DeployVault is Helpers {

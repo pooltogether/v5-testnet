@@ -3,8 +3,8 @@ pragma solidity 0.8.17;
 
 import { Script } from "forge-std/Script.sol";
 import { stdJson } from "forge-std/StdJson.sol";
-import "solidity-stringutils/strings.sol";
-import { console2 } from "forge-std/Test.sol";
+import { strings } from "solidity-stringutils/strings.sol";
+import { Strings } from "openzeppelin/utils/Strings.sol";
 
 import { Claimer } from "v5-vrgda-claimer/Claimer.sol";
 import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";
@@ -229,10 +229,7 @@ abstract contract Helpers is Script {
   }
 
   function _getDeployPath(string memory _deployPath) internal view returns (string memory) {
-    return
-      block.chainid == 31337
-        ? string.concat("/broadcast/", _deployPath, "/31337/")
-        : string.concat("/broadcast/", _deployPath, "/5/");
+    return string.concat("/broadcast/", _deployPath, "/", Strings.toString(block.chainid), "/");
   }
 
   /* ============ Getters ============ */
