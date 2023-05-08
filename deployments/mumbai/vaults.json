@@ -1,0 +1,112 @@
+{
+  "name": "PoolTogether Testnet Vault List",
+  "keywords": [
+    "pooltogether"
+  ],
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "timestamp": "2023-05-08T21:06:18.571Z",
+  "tokens": [
+    {
+      "chainId": 80001,
+      "address": "0x51F62701bD6C96242B1fe71f95C134079Ea27486",
+      "name": "PoolTogether Dai Stablecoin Low Yield Prize Token",
+      "decimals": 18,
+      "symbol": "PTDAILYT",
+      "extensions": {
+        "underlyingAsset": {
+          "address": "0x2990cf846Ec4738A672273Df204Cd93196D98D5f",
+          "symbol": "DAI",
+          "name": "Dai Stablecoin"
+        }
+      }
+    },
+    {
+      "chainId": 80001,
+      "address": "0x627a1De1EFAA2BA36EC51cDd962910Fd12b14fFb",
+      "name": "PoolTogether Dai Stablecoin High Yield Prize Token",
+      "decimals": 18,
+      "symbol": "PTDAIHYT",
+      "extensions": {
+        "underlyingAsset": {
+          "address": "0x2990cf846Ec4738A672273Df204Cd93196D98D5f",
+          "symbol": "DAI",
+          "name": "Dai Stablecoin"
+        }
+      }
+    },
+    {
+      "chainId": 80001,
+      "address": "0x662748F2c5D269Ac30D8d35cA1C0C2C658371187",
+      "name": "PoolTogether USD Coin Low Yield Prize Token",
+      "decimals": 6,
+      "symbol": "PTUSDCLYT",
+      "extensions": {
+        "underlyingAsset": {
+          "address": "0xA7E7dc95b2cF9311C8BE9a96e8E111CCf0408ADD",
+          "symbol": "USDC",
+          "name": "USD Coin"
+        }
+      }
+    },
+    {
+      "chainId": 80001,
+      "address": "0x5Fa2cd94d3F68bbE1C7c2be5d555A3931339c500",
+      "name": "PoolTogether USD Coin High Yield Prize Token",
+      "decimals": 6,
+      "symbol": "PTUSDCHYT",
+      "extensions": {
+        "underlyingAsset": {
+          "address": "0xA7E7dc95b2cF9311C8BE9a96e8E111CCf0408ADD",
+          "symbol": "USDC",
+          "name": "USD Coin"
+        }
+      }
+    },
+    {
+      "chainId": 80001,
+      "address": "0x12032CA7c271C1ca5F272040B15D1A19145c6323",
+      "name": "PoolTogether Gemini dollar Prize Token",
+      "decimals": 2,
+      "symbol": "PTGUSDT",
+      "extensions": {
+        "underlyingAsset": {
+          "address": "0x0e3CA10c2E675Ee8A93A1331d54981d99107E6e8",
+          "symbol": "GUSD",
+          "name": "Gemini dollar"
+        }
+      }
+    },
+    {
+      "chainId": 80001,
+      "address": "0xDdAA05da72f50b83af888988977E718805163579",
+      "name": "PoolTogether Wrapped BTC Prize Token",
+      "decimals": 8,
+      "symbol": "PTWBTCT",
+      "extensions": {
+        "underlyingAsset": {
+          "address": "0x14e8733e7f178c77ed99faa08BBf042100Da4268",
+          "symbol": "WBTC",
+          "name": "Wrapped BTC"
+        }
+      }
+    },
+    {
+      "chainId": 80001,
+      "address": "0x224060242784caB6c0E2Ec72C29F3Eac945Be7b9",
+      "name": "PoolTogether Wrapped Ether Prize Token",
+      "decimals": 18,
+      "symbol": "PTWETHT",
+      "extensions": {
+        "underlyingAsset": {
+          "address": "0x5617889c4030DB7C3FAd0e4a015460e0430b454C",
+          "symbol": "WETH",
+          "name": "Wrapped Ether"
+        }
+      }
+    }
+  ]
+}
