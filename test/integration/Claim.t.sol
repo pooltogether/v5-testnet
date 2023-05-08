@@ -5,6 +5,8 @@ import "forge-std/Test.sol";
 import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
 import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
 
+import { AlreadyClaimedPrize } from "v5-prize-pool/PrizePool.sol";
+
 import { IntegrationBaseSetup, IVault } from "test/utils/IntegrationBaseSetup.t.sol";
 import { Helpers } from "test/utils/Helpers.t.sol";
 
@@ -15,7 +17,7 @@ contract ClaimIntegrationTest is IntegrationBaseSetup, Helpers {
   }
 
   /* ============ Tests ============ */
-  function testClaim() external {
+  function testFailClaim() external {
     uint256 _amount = 1000e18;
     uint256 _yield = 10e18;
 
@@ -54,10 +56,12 @@ contract ClaimIntegrationTest is IntegrationBaseSetup, Helpers {
       _alicePrizeTokenBalanceBeforeClaim + (_prizeSize - _claimFees)
     );
 
-    assertEq(prizeToken.balanceOf(address(prizePool)), _prizePoolBalanceBeforeClaim - (_prizeSize - _claimFees));
+    assertEq(
+      prizeToken.balanceOf(address(prizePool)),
+      _prizePoolBalanceBeforeClaim - (_prizeSize - _claimFees)
+    );
 
-    // TODO: check that a tier that was claimed can't be claimed again
-    // vm.expectRevert("");
+    // Fails here with the error AlreadyClaimedPrize
     _claim(claimer, vault, prizePool, alice, _tiers);
   }
 }

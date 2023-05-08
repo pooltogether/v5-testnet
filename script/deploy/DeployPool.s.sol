@@ -20,24 +20,24 @@ import { ERC20, YieldVaultMintRate } from "src/YieldVaultMintRate.sol";
 import { Helpers } from "script/helpers/Helpers.sol";
 
 contract DeployPool is Helpers {
-  uint32 internal constant DRAW_PERIOD_SECONDS = 2 hours;
+  uint32 internal constant DRAW_PERIOD_SECONDS = 12 hours;
 
   function run() public {
     vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
 
     ERC20Mintable prizeToken = _getToken("POOL", _tokenDeployPath);
-    TwabController twabController = new TwabController(DRAW_PERIOD_SECONDS);
+    TwabController twabController = new TwabController(1 hours);
 
     PrizePool prizePool = new PrizePool(
       prizeToken,
       twabController,
-      uint32(365), // 52 weeks = 1 year
+      uint32(7), // grand prize should occur every 3.5 days
       DRAW_PERIOD_SECONDS,
       uint64(block.timestamp), // drawStartedAt
       uint8(2), // minimum number of tiers
-      100e18,
-      10e18,
-      10e18,
+      100,
+      10,
+      10,
       ud2x18(0.9e18), // claim threshold of 90%
       sd1x18(0.9e18) // alpha
     );
