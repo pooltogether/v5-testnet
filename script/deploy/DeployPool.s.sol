@@ -42,6 +42,14 @@ contract DeployPool is Helpers {
       sd1x18(0.9e18) // alpha
     );
 
+    if (block.chainid == 5) {
+      prizePool.setManager(GOERLI_DEFENDER_ADDRESS);
+    }
+
+    if (block.chainid == 80001) {
+      prizePool.setManager(MUMBAI_DEFENDER_ADDRESS);
+    }
+
     new Claimer(prizePool, 0.0001e18, 1000e18, DRAW_PERIOD_SECONDS, ud2x18(0.5e18));
 
     LiquidationPairFactory liquidationPairFactory = new LiquidationPairFactory();

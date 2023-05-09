@@ -41,6 +41,9 @@ abstract contract Helpers is Script {
 
   uint256 internal constant ONE_YEAR_IN_SECONDS = 31557600;
 
+  address internal constant GOERLI_DEFENDER_ADDRESS = 0x22f928063d7FA5a90f4fd7949bB0848aF7C79b0A;
+  address internal constant MUMBAI_DEFENDER_ADDRESS = 0xbCE45a1C2c1eFF18E77f217A62a44f885b26099f;
+
   /* ============ Helpers ============ */
 
   string internal _tokenDeployPath = _getDeployPath("DeployToken.s.sol");
@@ -82,6 +85,14 @@ abstract contract Helpers is Script {
   }
 
   function _yieldVaultGrantMinterRoles(YieldVaultMintRate _yieldVault) internal {
+    if (block.chainid == 5) {
+      _yieldVaultGrantMinterRole(_yieldVault, GOERLI_DEFENDER_ADDRESS);
+    }
+
+    if (block.chainid == 80001) {
+      _yieldVaultGrantMinterRole(_yieldVault, MUMBAI_DEFENDER_ADDRESS);
+    }
+
     _yieldVaultGrantMinterRole(_yieldVault, address(0x22f928063d7FA5a90f4fd7949bB0848aF7C79b0A));
     _yieldVaultGrantMinterRole(_yieldVault, address(0x5E6CC2397EcB33e6041C15360E17c777555A5E63));
     _yieldVaultGrantMinterRole(_yieldVault, address(0xA57D294c3a11fB542D524062aE4C5100E0E373Ec));
