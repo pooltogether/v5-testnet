@@ -12,7 +12,6 @@ import { ILiquidationSource } from "v5-liquidator/interfaces/ILiquidationSource.
 import { LiquidationPair } from "v5-liquidator/LiquidationPair.sol";
 import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";
 import { LiquidationRouter } from "v5-liquidator/LiquidationRouter.sol";
-import { UFixed32x9 } from "v5-liquidator-libraries/FixedMathLib.sol";
 
 import { ERC20Mintable } from "src/ERC20Mintable.sol";
 import { VaultMintRate } from "src/VaultMintRate.sol";
@@ -21,29 +20,37 @@ import { ERC20, YieldVaultMintRate } from "src/YieldVaultMintRate.sol";
 import { Helpers } from "script/helpers/Helpers.sol";
 
 contract DeployPool is Helpers {
-  uint32 internal constant DRAW_PERIOD_SECONDS = 2 hours;
+  uint32 internal constant DRAW_PERIOD_SECONDS = 12 hours;
 
   function run() public {
     vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
 
     ERC20Mintable prizeToken = _getToken("POOL", _tokenDeployPath);
-    TwabController twabController = new TwabController();
+    TwabController twabController = new TwabController(1 hours);
 
     PrizePool prizePool = new PrizePool(
       prizeToken,
       twabController,
-      uint32(365), // 52 weeks = 1 year
-      DRAW_PERIOD_SECONDS, // drawPeriodSeconds
+      uint32(7), // grand prize should occur every 3.5 days
+      DRAW_PERIOD_SECONDS,
       uint64(block.timestamp), // drawStartedAt
       uint8(2), // minimum number of tiers
-      100e18,
-      10e18,
-      10e18,
+      100,
+      10,
+      10,
       ud2x18(0.9e18), // claim threshold of 90%
       sd1x18(0.9e18) // alpha
     );
 
-    new Claimer(prizePool, ud2x18(1.1e18), 0.0001e18);
+    if (block.chainid == 5) {
+      prizePool.setManager(GOERLI_DEFENDER_ADDRESS);
+    }
+
+    if (block.chainid == 80001) {
+      prizePool.setManager(MUMBAI_DEFENDER_ADDRESS);
+    }
+
+    new Claimer(prizePool, 0.0001e18, 1000e18, DRAW_PERIOD_SECONDS, ud2x18(0.5e18));
 
     LiquidationPairFactory liquidationPairFactory = new LiquidationPairFactory();
     new LiquidationRouter(liquidationPairFactory);

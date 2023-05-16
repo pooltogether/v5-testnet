@@ -3,8 +3,8 @@ pragma solidity 0.8.17;
 
 import { Script } from "forge-std/Script.sol";
 import { stdJson } from "forge-std/StdJson.sol";
-import "solidity-stringutils/strings.sol";
-import { console2 } from "forge-std/Test.sol";
+import { strings } from "solidity-stringutils/strings.sol";
+import { Strings } from "openzeppelin/utils/Strings.sol";
 
 import { Claimer } from "v5-vrgda-claimer/Claimer.sol";
 import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";
@@ -40,6 +40,9 @@ abstract contract Helpers is Script {
   uint256 internal constant PRIZE_TOKEN_PRICE = 1e18;
 
   uint256 internal constant ONE_YEAR_IN_SECONDS = 31557600;
+
+  address internal constant GOERLI_DEFENDER_ADDRESS = 0x22f928063d7FA5a90f4fd7949bB0848aF7C79b0A;
+  address internal constant MUMBAI_DEFENDER_ADDRESS = 0xbCE45a1C2c1eFF18E77f217A62a44f885b26099f;
 
   /* ============ Helpers ============ */
 
@@ -82,6 +85,14 @@ abstract contract Helpers is Script {
   }
 
   function _yieldVaultGrantMinterRoles(YieldVaultMintRate _yieldVault) internal {
+    if (block.chainid == 5) {
+      _yieldVaultGrantMinterRole(_yieldVault, GOERLI_DEFENDER_ADDRESS);
+    }
+
+    if (block.chainid == 80001) {
+      _yieldVaultGrantMinterRole(_yieldVault, MUMBAI_DEFENDER_ADDRESS);
+    }
+
     _yieldVaultGrantMinterRole(_yieldVault, address(0x22f928063d7FA5a90f4fd7949bB0848aF7C79b0A));
     _yieldVaultGrantMinterRole(_yieldVault, address(0x5E6CC2397EcB33e6041C15360E17c777555A5E63));
     _yieldVaultGrantMinterRole(_yieldVault, address(0xA57D294c3a11fB542D524062aE4C5100E0E373Ec));
@@ -228,11 +239,8 @@ abstract contract Helpers is Script {
     revert(_errorMsg);
   }
 
-  function _getDeployPath(string memory _deployPath) internal returns (string memory) {
-    return
-      block.chainid == 31337
-        ? string.concat("/broadcast/", _deployPath, "/31337/")
-        : string.concat("/broadcast/", _deployPath, "/5/");
+  function _getDeployPath(string memory _deployPath) internal view returns (string memory) {
+    return string.concat("/broadcast/", _deployPath, "/", Strings.toString(block.chainid), "/");
   }
 
   /* ============ Getters ============ */

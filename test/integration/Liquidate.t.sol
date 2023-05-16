@@ -2,7 +2,8 @@
 pragma solidity 0.8.17;
 
 import "forge-std/Test.sol";
-import { ERC20Mock, IERC20 } from "openzeppelin/mocks/ERC20Mock.sol";
+import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
+import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
 
 import { IntegrationBaseSetup } from "test/utils/IntegrationBaseSetup.t.sol";
 import { Helpers } from "test/utils/Helpers.t.sol";
@@ -27,11 +28,13 @@ contract LiquidateIntegrationTest is IntegrationBaseSetup, Helpers {
 
     prizeToken.mint(alice, 1000e18);
 
+    uint256 maxAmountOut = liquidationPair.maxAmountOut();
+
     (uint256 _alicePrizeTokenBalanceBefore, uint256 _prizeTokenContributed) = _liquidate(
       liquidationRouter,
       liquidationPair,
       prizeToken,
-      _yield,
+      maxAmountOut,
       alice
     );
 
@@ -44,8 +47,8 @@ contract LiquidateIntegrationTest is IntegrationBaseSetup, Helpers {
       (_prizeTokenContributed * 10) / 100
     );
 
-    assertEq(IERC20(vault).balanceOf(alice), _yield);
-    assertEq(vault.balanceOf(alice), _yield);
+    assertEq(IERC20(vault).balanceOf(alice), maxAmountOut);
+    assertEq(vault.balanceOf(alice), maxAmountOut);
 
     vm.stopPrank();
   }

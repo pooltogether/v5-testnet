@@ -14,7 +14,7 @@ import { ILiquidationSource } from "v5-liquidator/interfaces/ILiquidationSource.
 import { LiquidationPair } from "v5-liquidator/LiquidationPair.sol";
 import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";
 import { LiquidationRouter } from "v5-liquidator/LiquidationRouter.sol";
-import { UFixed32x9 } from "v5-liquidator-libraries/FixedMathLib.sol";
+import { UFixed32x4 } from "v5-liquidator-libraries/FixedMathLib.sol";
 import { Vault } from "v5-vault/Vault.sol";
 import { YieldVault } from "v5-vault-mock/YieldVault.sol";
 
@@ -66,30 +66,31 @@ contract IntegrationBaseSetup is Test {
     vm.label(alice, "Alice");
     vm.label(bob, "Bob");
 
-    underlyingAsset = new ERC20Mock("Dai Stablecoin", "DAI", address(this), 0);
+    underlyingAsset = new ERC20Mock();
+    prizeToken = new ERC20Mock();
 
-    prizeToken = new ERC20Mock("PoolTogether", "POOL", address(this), 0);
-
-    twabController = new TwabController();
+    twabController = new TwabController(drawPeriodSeconds);
 
     prizePool = new PrizePool(
       prizeToken,
       twabController,
-      uint32(365), // 52 weeks = 1 year
+      uint32(365), // grand prize should occur once a year
       drawPeriodSeconds, // drawPeriodSeconds
       uint64(block.timestamp), // drawStartedAt
       uint8(2), // minimum number of tiers
-      100e18,
-      10e18,
-      10e18,
+      100,
+      10,
+      10,
       ud2x18(0.9e18), // claim threshold of 90%
       sd1x18(0.9e18) // alpha
     );
 
-    claimer = new Claimer(prizePool, ud2x18(1.1e18), 0.0001e18);
+    prizePool.setManager(address(this));
+
+    claimer = new Claimer(prizePool, 0.0001e18, 1000e18, drawPeriodSeconds, ud2x18(0.5e18));
 
     yieldVault = new YieldVault(
-      underlyingAsset,
+      address(underlyingAsset),
       "PoolTogether aEthDAI Yield (PTaEthDAIY)",
       "PTaEthDAIY"
     );
@@ -102,29 +103,26 @@ contract IntegrationBaseSetup is Test {
       yieldVault,
       prizePool,
       claimer,
+      address(this),
+      100000000, // 0.1 = 10%
       address(this)
     );
 
-    liquidationPair = new LiquidationPair(
-      ILiquidationSource(vault),
-      address(prizeToken),
-      address(vault),
-      UFixed32x9.wrap(0.3e9),
-      UFixed32x9.wrap(0.02e9),
-      100e18,
-      50e18
-    );
-
     liquidationPairFactory = new LiquidationPairFactory();
+
+    uint128 _virtualReserveIn = 10e18;
+    uint128 _virtualReserveOut = 5e18;
+    uint256 _minK = (uint256(_virtualReserveIn) * _virtualReserveOut * 0.8e18) / 1e18;
 
     liquidationPair = liquidationPairFactory.createPair(
       ILiquidationSource(vault),
       address(prizeToken),
       address(vault),
-      UFixed32x9.wrap(0.3e9),
-      UFixed32x9.wrap(0.02e9),
-      100e18,
-      50e18
+      UFixed32x4.wrap(0.3e4),
+      UFixed32x4.wrap(0.02e4),
+      _virtualReserveIn,
+      _virtualReserveOut,
+      _minK
     );
 
     vault.setLiquidationPair(liquidationPair);

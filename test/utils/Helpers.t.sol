@@ -6,7 +6,7 @@ import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
 import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
 import { IERC4626 } from "openzeppelin/token/ERC20/extensions/ERC4626.sol";
 
-import { Claimer, IVault } from "v5-vrgda-claimer/Claimer.sol";
+import { Claim, Claimer, IVault } from "v5-vrgda-claimer/Claimer.sol";
 import { PrizePool } from "v5-prize-pool/PrizePool.sol";
 import { LiquidationPair } from "v5-liquidator/LiquidationPair.sol";
 import { LiquidationRouter } from "v5-liquidator/LiquidationRouter.sol";
@@ -47,16 +47,21 @@ contract Helpers is Test {
     uint256 _yield,
     address _user
   ) internal returns (uint256 userPrizeTokenBalanceBeforeSwap, uint256 prizeTokenContributed) {
-    prizeTokenContributed = _liquidationPair.computeExactAmountIn(_yield);
+    uint256 maxPrizeTokenContributed = _liquidationPair.computeExactAmountIn(_yield);
     uint256 vaultShares = _liquidationPair.computeExactAmountOut(prizeTokenContributed);
     console2.log("prizeTokenContributed", prizeTokenContributed);
     console2.log("vaultShares", vaultShares);
 
-    _prizeToken.approve(address(_liquidationRouter), prizeTokenContributed);
+    _prizeToken.approve(address(_liquidationRouter), maxPrizeTokenContributed);
 
     userPrizeTokenBalanceBeforeSwap = _prizeToken.balanceOf(_user);
 
-    _liquidationRouter.swapExactAmountOut(_liquidationPair, _user, _yield, prizeTokenContributed);
+    prizeTokenContributed = _liquidationRouter.swapExactAmountOut(
+      _liquidationPair,
+      _user,
+      _yield,
+      maxPrizeTokenContributed
+    );
   }
 
   /* ============ Award ============ */
@@ -73,8 +78,8 @@ contract Helpers is Test {
     address _user,
     uint8[] memory _tiers
   ) internal returns (uint256) {
-    address[] memory _winners = new address[](1);
-    _winners[0] = _user;
+    Claim[] memory claims = new Claim[](1);
+    claims[0] = Claim({ vault: IVault(address(_vault)), winner: _user, tier: _tiers[0] });
 
     uint32 _drawPeriodSeconds = _prizePool.drawPeriodSeconds();
 
@@ -86,14 +91,8 @@ contract Helpers is Test {
         10
     );
 
-    uint256 _claimFees = _claimer.claimPrizes(
-      IVault(address(_vault)),
-      _winners,
-      _tiers,
-      0,
-      address(this)
-    );
+    (, uint256 _totalFees) = _claimer.claimPrizes(1, claims, address(this));
 
-    return _claimFees;
+    return _totalFees;
   }
 }

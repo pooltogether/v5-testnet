@@ -110,6 +110,12 @@ Use one of the following commands to deploy on the testnet of your choice.
 
 Then configure the contracts: `npm run deploy:config-contracts:ethGoerli`
 
+#### Polygon Mumbai
+
+`npm run deploy:contracts:mumbai`
+
+Then configure the contracts: `npm run deploy:config-contracts:mumbai`
+
 ### Contract List
 
 To generate the local contract list, run the following command: `npm run gen:local`

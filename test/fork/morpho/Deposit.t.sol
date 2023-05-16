@@ -2,8 +2,8 @@
 pragma solidity 0.8.17;
 
 import "forge-std/Test.sol";
-import { ERC20Mock, IERC20 } from "openzeppelin/mocks/ERC20Mock.sol";
-import { IERC4626 } from "openzeppelin/token/ERC20/extensions/ERC4626.sol";
+import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
+import { IERC4626, IERC20 } from "openzeppelin/token/ERC20/extensions/ERC4626.sol";
 
 import { ForkBaseSetup } from "test/utils/ForkBaseSetup.t.sol";
 import { Helpers } from "test/utils/Helpers.t.sol";
@@ -127,7 +127,7 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
     }
 
     // The YieldVault may round down and mint a bit less shares
-    assertApproxEqAbs(yieldVault.convertToAssets(yieldVault.balanceOf(address(vault))), _amount, 1);
+    assertApproxEqAbs(yieldVault.maxWithdraw(address(vault)), _amount, 1);
 
     vm.stopPrank();
   }
