@@ -42,6 +42,7 @@ abstract contract Helpers is Script {
   uint256 internal constant ONE_YEAR_IN_SECONDS = 31557600;
 
   address internal constant GOERLI_DEFENDER_ADDRESS = 0x22f928063d7FA5a90f4fd7949bB0848aF7C79b0A;
+  address internal constant SEPOLIA_DEFENDER_ADDRESS = 0x062bDEdfECFd229cd908371A5683e23224366856;
   address internal constant MUMBAI_DEFENDER_ADDRESS = 0xbCE45a1C2c1eFF18E77f217A62a44f885b26099f;
 
   /* ============ Helpers ============ */
@@ -87,6 +88,10 @@ abstract contract Helpers is Script {
   function _yieldVaultGrantMinterRoles(YieldVaultMintRate _yieldVault) internal {
     if (block.chainid == 5) {
       _yieldVaultGrantMinterRole(_yieldVault, GOERLI_DEFENDER_ADDRESS);
+    }
+
+    if (block.chainid == 11155111) {
+      _yieldVaultGrantMinterRole(_yieldVault, SEPOLIA_DEFENDER_ADDRESS);
     }
 
     if (block.chainid == 80001) {
