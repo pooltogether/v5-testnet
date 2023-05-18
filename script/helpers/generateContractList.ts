@@ -109,6 +109,9 @@ export const generateContractList = (deploymentPaths: string[]): ContractList =>
     timestamp: new Date().toISOString(),
     contracts: [],
   };
+  
+  // Map to reference deployed contract names by address
+  const contractAddressToName = new Map<string, string>();
 
   const { transactions: stableTokenTransactions } = getBlob(deploymentPaths[0]);
   let { transactions: tokenTransactions } = getBlob(deploymentPaths[1]);
@@ -130,14 +133,24 @@ export const generateContractList = (deploymentPaths: string[]): ContractList =>
       }) => {
         const createdContract = additionalContracts[0];
 
+        // Store name of contract for reference later
+        if(contractName) contractAddressToName.set(contractAddress, contractName);
+
         if (
           transactionType == "CALL" &&
           createdContract &&
           createdContract.transactionType === "CREATE"
         ) {
+
+          // Handle case when contract name isn't available on CALL
+          if(!contractName) {
+            const storedName = contractAddressToName.get(contractAddress);
+            if(storedName) contractName = storedName;
+          }
+
+          // Set contract info to the created contract
           transactionType = "CREATE";
           contractAddress = createdContract.address;
-
           if (contractName === "LiquidationPairFactory") {
             contractName = "LiquidationPair";
           }
