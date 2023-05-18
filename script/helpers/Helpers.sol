@@ -107,16 +107,22 @@ abstract contract Helpers is Script {
   function _getDeploymentArtifacts(
     string memory _deploymentArtifactsPath
   ) internal returns (string[] memory) {
-    string[] memory inputs = new string[](5);
+    string[] memory inputs = new string[](4);
     inputs[0] = "ls";
     inputs[1] = "-m";
-    inputs[2] = "-x";
-    inputs[3] = "-r";
-    inputs[4] = string.concat(vm.projectRoot(), _deploymentArtifactsPath);
+    inputs[2] = "-r";
+    inputs[3] = string.concat(vm.projectRoot(), _deploymentArtifactsPath);
     bytes memory res = vm.ffi(inputs);
 
-    // Slice ls result, remove newline and push into array
+    // Slice ls result
     strings.slice memory s = string(res).toSlice();
+
+    // Remove directory jargon at the beginning of the slice (Fix for Windows Git Bash)
+    strings.slice memory dirEnd = "/:".toSlice();
+    strings.slice memory sWithoutDirPrefix = s.copy().find(dirEnd).beyond(dirEnd);
+    if(!sWithoutDirPrefix.empty()) s = sWithoutDirPrefix;
+
+    // Remove newline and push into array
     strings.slice memory delim = ", ".toSlice();
     strings.slice memory sliceNewline = "\n".toSlice();
     string[] memory filesName = new string[](s.count(delim) + 1);
