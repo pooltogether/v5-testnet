@@ -46,6 +46,10 @@ contract DeployPool is Helpers {
       prizePool.setManager(GOERLI_DEFENDER_ADDRESS);
     }
 
+    if (block.chainid == 11155111) {
+      prizePool.setManager(SEPOLIA_DEFENDER_ADDRESS);
+    }
+
     if (block.chainid == 80001) {
       prizePool.setManager(MUMBAI_DEFENDER_ADDRESS);
     }

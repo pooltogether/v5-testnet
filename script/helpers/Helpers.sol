@@ -42,6 +42,7 @@ abstract contract Helpers is Script {
   uint256 internal constant ONE_YEAR_IN_SECONDS = 31557600;
 
   address internal constant GOERLI_DEFENDER_ADDRESS = 0x22f928063d7FA5a90f4fd7949bB0848aF7C79b0A;
+  address internal constant SEPOLIA_DEFENDER_ADDRESS = 0x062bDEdfECFd229cd908371A5683e23224366856;
   address internal constant MUMBAI_DEFENDER_ADDRESS = 0xbCE45a1C2c1eFF18E77f217A62a44f885b26099f;
 
   /* ============ Helpers ============ */
@@ -89,6 +90,10 @@ abstract contract Helpers is Script {
       _yieldVaultGrantMinterRole(_yieldVault, GOERLI_DEFENDER_ADDRESS);
     }
 
+    if (block.chainid == 11155111) {
+      _yieldVaultGrantMinterRole(_yieldVault, SEPOLIA_DEFENDER_ADDRESS);
+    }
+
     if (block.chainid == 80001) {
       _yieldVaultGrantMinterRole(_yieldVault, MUMBAI_DEFENDER_ADDRESS);
     }
@@ -102,16 +107,22 @@ abstract contract Helpers is Script {
   function _getDeploymentArtifacts(
     string memory _deploymentArtifactsPath
   ) internal returns (string[] memory) {
-    string[] memory inputs = new string[](5);
+    string[] memory inputs = new string[](4);
     inputs[0] = "ls";
     inputs[1] = "-m";
-    inputs[2] = "-x";
-    inputs[3] = "-r";
-    inputs[4] = string.concat(vm.projectRoot(), _deploymentArtifactsPath);
+    inputs[2] = "-r";
+    inputs[3] = string.concat(vm.projectRoot(), _deploymentArtifactsPath);
     bytes memory res = vm.ffi(inputs);
 
-    // Slice ls result, remove newline and push into array
+    // Slice ls result
     strings.slice memory s = string(res).toSlice();
+
+    // Remove directory jargon at the beginning of the slice (Fix for Windows Git Bash)
+    strings.slice memory dirEnd = "/:".toSlice();
+    strings.slice memory sWithoutDirPrefix = s.copy().find(dirEnd).beyond(dirEnd);
+    if(!sWithoutDirPrefix.empty()) s = sWithoutDirPrefix;
+
+    // Remove newline and push into array
     strings.slice memory delim = ", ".toSlice();
     strings.slice memory sliceNewline = "\n".toSlice();
     string[] memory filesName = new string[](s.count(delim) + 1);
