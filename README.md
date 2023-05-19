@@ -104,6 +104,12 @@ Then configure the contracts: `npm run deploy:config-contracts:local`
 
 Use one of the following commands to deploy on the testnet of your choice.
 
+#### Ethereum Sepolia
+
+`npm run deploy:contracts:ethSepolia`
+
+Then configure the contracts: `npm run deploy:config-contracts:ethSepolia`
+
 #### Ethereum Goerli
 
 `npm run deploy:contracts:ethGoerli`
