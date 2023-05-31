@@ -17,6 +17,7 @@
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/openzeppelin/openzeppelin-contracts
+  branch = release-v4.9
 [submodule "lib/prb-math"]
 	branch = v3
 	path = lib/prb-math
