@@ -74,7 +74,7 @@ contract ForkBaseSetup is Test {
     prizeTokenAddress = address(0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e); // POOL token on Ethereum
     prizeToken = IERC20(prizeTokenAddress);
 
-    twabController = new TwabController(drawPeriodSeconds);
+    twabController = new TwabController();
 
     uint64 drawStartsAt = uint64(block.timestamp);
 

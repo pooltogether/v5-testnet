@@ -26,7 +26,7 @@ contract DeployPool is Helpers {
     vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
 
     ERC20Mintable prizeToken = _getToken("POOL", _tokenDeployPath);
-    TwabController twabController = new TwabController(1 hours);
+    TwabController twabController = new TwabController();
 
     PrizePool prizePool = new PrizePool(
       prizeToken,

@@ -8,17 +8,17 @@
     "minor": 0,
     "patch": 0
   },
-  "timestamp": "2023-05-18T04:02:53.681Z",
+  "timestamp": "2023-06-02T18:41:11.447Z",
   "tokens": [
     {
       "chainId": 11155111,
-      "address": "0x92a6e57583262bDEFBA0bf36f651F0f4a1856737",
+      "address": "0x0C393C363bAE8Eebe6E1Afe4716e317CbD2E9949",
       "name": "PoolTogether Dai Stablecoin Low Yield Prize Token",
       "decimals": 18,
       "symbol": "PTDAILYT",
       "extensions": {
         "underlyingAsset": {
-          "address": "0x501B79e61843B3432E5B48d59CB7E6A93185e50C",
+          "address": "0x4a798649F6AA23D6a3a1cab65fc0a8fa772E0a40",
           "symbol": "DAI",
           "name": "Dai Stablecoin"
         }
@@ -26,13 +26,13 @@
     },
     {
       "chainId": 11155111,
-      "address": "0x95990dd6C8A75b8Cd0D8f424aa216FCE8963Ad13",
+      "address": "0x171df7a2D8547322de5BA27FD9856B04620A3562",
       "name": "PoolTogether Dai Stablecoin High Yield Prize Token",
       "decimals": 18,
       "symbol": "PTDAIHYT",
       "extensions": {
         "underlyingAsset": {
-          "address": "0x501B79e61843B3432E5B48d59CB7E6A93185e50C",
+          "address": "0x4a798649F6AA23D6a3a1cab65fc0a8fa772E0a40",
           "symbol": "DAI",
           "name": "Dai Stablecoin"
         }
@@ -40,13 +40,13 @@
     },
     {
       "chainId": 11155111,
-      "address": "0xb7024b6b3c886519AFE27A6B19FAd4b7b916BA97",
+      "address": "0xe288828FFb4087F633E17D4715103648266C0cdb",
       "name": "PoolTogether USD Coin Low Yield Prize Token",
       "decimals": 6,
       "symbol": "PTUSDCLYT",
       "extensions": {
         "underlyingAsset": {
-          "address": "0x1977822061d8a394726803e2c2F6524a4E3e7Aff",
+          "address": "0x7A8f1413B44F7346EAb36c4793Bd54148Ca916A5",
           "symbol": "USDC",
           "name": "USD Coin"
         }
@@ -54,13 +54,13 @@
     },
     {
       "chainId": 11155111,
-      "address": "0x871506aFB4adBC21Bb497c531954e6a10313Fd8A",
+      "address": "0x0B87bF0822AFAecDEb367cfAaCcf40c0e895F3AD",
       "name": "PoolTogether USD Coin High Yield Prize Token",
       "decimals": 6,
       "symbol": "PTUSDCHYT",
       "extensions": {
         "underlyingAsset": {
-          "address": "0x1977822061d8a394726803e2c2F6524a4E3e7Aff",
+          "address": "0x7A8f1413B44F7346EAb36c4793Bd54148Ca916A5",
           "symbol": "USDC",
           "name": "USD Coin"
         }
@@ -68,13 +68,13 @@
     },
     {
       "chainId": 11155111,
-      "address": "0x64AB9296B1C7686407085c44A971e8C090eA768b",
+      "address": "0xebC5c1257A6DB56d2c3C9466A5271C5Be4FB1397",
       "name": "PoolTogether Gemini dollar Prize Token",
       "decimals": 2,
       "symbol": "PTGUSDT",
       "extensions": {
         "underlyingAsset": {
-          "address": "0xa577C58435e0334B5039f5e71cCb4a45641c3495",
+          "address": "0x6EBa7deCd74D8327FA83b7Edc6Cb1dEADDfD8EFA",
           "symbol": "GUSD",
           "name": "Gemini dollar"
         }
@@ -82,13 +82,13 @@
     },
     {
       "chainId": 11155111,
-      "address": "0x65e08197357a23bB47De4337CfBb79497E01680e",
+      "address": "0x7Ea2e76587962c526B60492bd8342AAe859f1219",
       "name": "PoolTogether Wrapped BTC Prize Token",
       "decimals": 8,
       "symbol": "PTWBTCT",
       "extensions": {
         "underlyingAsset": {
-          "address": "0x3Bd2312250C67Ca96C442fe8490A27d24D70e41C",
+          "address": "0xbdaAB70E7d8767e94680AD2D27B503daE01447A4",
           "symbol": "WBTC",
           "name": "Wrapped BTC"
         }
@@ -96,13 +96,13 @@
     },
     {
       "chainId": 11155111,
-      "address": "0xB18E7808201b34C3BD2930b26fc9Aae5C0d365EE",
+      "address": "0xD6D82beB1243A254A61ae4B3a1936Da962F947b7",
       "name": "PoolTogether Wrapped Ether Prize Token",
       "decimals": 18,
       "symbol": "PTWETHT",
       "extensions": {
         "underlyingAsset": {
-          "address": "0xa4DE6Eb323dd2f8A8B4D07B6b295dC57Bb1dE30A",
+          "address": "0x07056BA1bD5D71AA743F33Aa3A7BB76f08834873",
           "symbol": "WETH",
           "name": "Wrapped Ether"
         }
