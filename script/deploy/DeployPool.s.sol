@@ -20,7 +20,7 @@ import { ERC20, YieldVaultMintRate } from "src/YieldVaultMintRate.sol";
 import { Helpers } from "script/helpers/Helpers.sol";
 
 contract DeployPool is Helpers {
-  uint32 internal constant DRAW_PERIOD_SECONDS = 12 hours;
+  uint32 internal constant DRAW_PERIOD_SECONDS = 1 hours;
 
   function run() public {
     vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
