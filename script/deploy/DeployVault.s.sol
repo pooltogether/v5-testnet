@@ -5,7 +5,7 @@ import { PrizePool, SD59x18 } from "v5-prize-pool/PrizePool.sol";
 import { ud2x18 } from "prb-math/UD2x18.sol";
 import { sd1x18 } from "prb-math/SD1x18.sol";
 import { TwabController } from "v5-twab-controller/TwabController.sol";
-import { Claimer, IVault } from "v5-vrgda-claimer/Claimer.sol";
+import { Claimer } from "v5-vrgda-claimer/Claimer.sol";
 import { ILiquidationSource } from "v5-liquidator/interfaces/ILiquidationSource.sol";
 import { LiquidationPair } from "v5-liquidator/LiquidationPair.sol";
 import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";

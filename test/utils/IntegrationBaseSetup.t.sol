@@ -5,11 +5,11 @@ import "forge-std/Test.sol";
 import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
 import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
 
-import { PrizePool, SD59x18 } from "v5-prize-pool/PrizePool.sol";
+import { PrizePool, ConstructorParams, SD59x18 } from "v5-prize-pool/PrizePool.sol";
 import { ud2x18 } from "prb-math/UD2x18.sol";
 import { sd1x18 } from "prb-math/SD1x18.sol";
 import { TwabController } from "v5-twab-controller/TwabController.sol";
-import { Claimer, IVault } from "v5-vrgda-claimer/Claimer.sol";
+import { Claimer } from "v5-vrgda-claimer/Claimer.sol";
 import { ILiquidationSource } from "v5-liquidator/interfaces/ILiquidationSource.sol";
 import { LiquidationPair } from "v5-liquidator/LiquidationPair.sol";
 import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";
@@ -69,23 +69,26 @@ contract IntegrationBaseSetup is Test {
     underlyingAsset = new ERC20Mock();
     prizeToken = new ERC20Mock();
 
-    twabController = new TwabController();
+    twabController = new TwabController(1 days, 0);
 
     prizePool = new PrizePool(
-      prizeToken,
-      twabController,
-      uint32(365), // grand prize should occur once a year
-      drawPeriodSeconds, // drawPeriodSeconds
-      uint64(block.timestamp), // drawStartedAt
-      uint8(2), // minimum number of tiers
-      100,
-      10,
-      10,
-      ud2x18(0.9e18), // claim threshold of 90%
-      sd1x18(0.9e18) // alpha
+      ConstructorParams(
+        prizeToken,
+        twabController,
+        address(0),
+        uint16(365), // grand prize should occur once a year
+        drawPeriodSeconds, // drawPeriodSeconds
+        uint64(block.timestamp), // drawStartedAt
+        uint8(3), // minimum number of tiers
+        100,
+        10,
+        10,
+        ud2x18(0.9e18), // claim threshold of 90%
+        sd1x18(0.9e18) // alpha
+      )
     );
 
-    prizePool.setManager(address(this));
+    prizePool.setDrawManager(address(this));
 
     claimer = new Claimer(prizePool, 0.0001e18, 1000e18, drawPeriodSeconds, ud2x18(0.5e18));
 

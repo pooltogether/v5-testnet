@@ -3,11 +3,11 @@ pragma solidity 0.8.17;
 
 import { Script } from "forge-std/Script.sol";
 
-import { PrizePool, SD59x18 } from "v5-prize-pool/PrizePool.sol";
+import { PrizePool, ConstructorParams, SD59x18 } from "v5-prize-pool/PrizePool.sol";
 import { ud2x18 } from "prb-math/UD2x18.sol";
 import { sd1x18 } from "prb-math/SD1x18.sol";
 import { TwabController } from "v5-twab-controller/TwabController.sol";
-import { Claimer, IVault } from "v5-vrgda-claimer/Claimer.sol";
+import { Claimer } from "v5-vrgda-claimer/Claimer.sol";
 import { ILiquidationSource } from "v5-liquidator/interfaces/ILiquidationSource.sol";
 import { LiquidationPair } from "v5-liquidator/LiquidationPair.sol";
 import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";
@@ -26,32 +26,35 @@ contract DeployPool is Helpers {
     vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
 
     ERC20Mintable prizeToken = _getToken("POOL", _tokenDeployPath);
-    TwabController twabController = new TwabController();
+    TwabController twabController = new TwabController(1 days, 0);
 
     PrizePool prizePool = new PrizePool(
-      prizeToken,
-      twabController,
-      uint32(7), // grand prize should occur every 3.5 days
-      DRAW_PERIOD_SECONDS,
-      uint64(block.timestamp), // drawStartedAt
-      uint8(2), // minimum number of tiers
-      100,
-      10,
-      10,
-      ud2x18(0.9e18), // claim threshold of 90%
-      sd1x18(0.9e18) // alpha
+      ConstructorParams(
+        prizeToken,
+        twabController,
+        address(0),
+        uint16(7), // grand prize should occur every 3.5 days
+        DRAW_PERIOD_SECONDS,
+        uint64(block.timestamp), // drawStartedAt
+        uint8(3), // minimum number of tiers
+        100,
+        10,
+        10,
+        ud2x18(0.9e18), // claim threshold of 90%
+        sd1x18(0.9e18) // alpha
+      )
     );
 
     if (block.chainid == 5) {
-      prizePool.setManager(GOERLI_DEFENDER_ADDRESS);
+      prizePool.setDrawManager(GOERLI_DEFENDER_ADDRESS);
     }
 
     if (block.chainid == 11155111) {
-      prizePool.setManager(SEPOLIA_DEFENDER_ADDRESS);
+      prizePool.setDrawManager(SEPOLIA_DEFENDER_ADDRESS);
     }
 
     if (block.chainid == 80001) {
-      prizePool.setManager(MUMBAI_DEFENDER_ADDRESS);
+      prizePool.setDrawManager(MUMBAI_DEFENDER_ADDRESS);
     }
 
     new Claimer(prizePool, 0.0001e18, 1000e18, DRAW_PERIOD_SECONDS, ud2x18(0.5e18));
