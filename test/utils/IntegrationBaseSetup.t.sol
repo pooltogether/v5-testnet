@@ -69,7 +69,7 @@ contract IntegrationBaseSetup is Test {
     underlyingAsset = new ERC20Mock();
     prizeToken = new ERC20Mock();
 
-    twabController = new TwabController(1 days, 0);
+    twabController = new TwabController(1 days, uint32(block.timestamp));
 
     prizePool = new PrizePool(
       ConstructorParams(
