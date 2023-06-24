@@ -39,7 +39,7 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
     uint256 _shares = _deposit(underlyingAsset, vault, _amount, alice);
 
     assertEq(vault.balanceOf(alice), _shares);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), _amount);
+    assertApproxEqAbs(vault.convertToAssets(vault.balanceOf(alice)), _amount, 1000); // approximate to cover rounding in `convertToAssets` function
 
     assertEq(twabController.balanceOf(address(vault), alice), _amount);
     assertEq(twabController.delegateBalanceOf(address(vault), alice), _amount);
@@ -48,9 +48,10 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
       assertApproxEqAbs(aToken.balanceOf(morphoPoolAddress), _aTokenBalanceBefore + _amount, 1);
     } else {
       // Part of the USDC variable debt is repayed
-      assertEq(
+      assertApproxEqAbs(
         variableDebtToken.balanceOf(morphoPoolAddress),
-        _variableDebtTokenBalanceBefore - _amount
+        _variableDebtTokenBalanceBefore - _amount,
+        1
       );
     }
 
@@ -71,7 +72,7 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
     uint256 _shares = _sponsor(underlyingAsset, vault, _amount, alice);
 
     assertEq(vault.balanceOf(alice), _shares);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), _amount);
+    assertApproxEqAbs(vault.convertToAssets(vault.balanceOf(alice)), _amount, 1000); // approximate to cover rounding in `convertToAssets` function
 
     assertEq(twabController.balanceOf(address(vault), alice), _amount);
     assertEq(twabController.delegateBalanceOf(address(vault), alice), 0);
@@ -83,9 +84,10 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
       assertApproxEqAbs(aToken.balanceOf(morphoPoolAddress), _aTokenBalanceBefore + _amount, 1);
     } else {
       // Part of the USDC variable debt is repayed
-      assertEq(
+      assertApproxEqAbs(
         variableDebtToken.balanceOf(morphoPoolAddress),
-        _variableDebtTokenBalanceBefore - _amount
+        _variableDebtTokenBalanceBefore - _amount,
+        1
       );
     }
 
@@ -108,7 +110,7 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
     twabController.delegate(address(vault), bob);
 
     assertEq(vault.balanceOf(alice), _shares);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), _amount);
+    assertApproxEqAbs(vault.convertToAssets(vault.balanceOf(alice)), _amount, 1000); // approximate to cover rounding in `convertToAssets` function
 
     assertEq(twabController.balanceOf(address(vault), alice), _amount);
     assertEq(twabController.delegateBalanceOf(address(vault), alice), 0);
@@ -120,9 +122,10 @@ contract DepositMorphoForkTest is ForkBaseSetup, Helpers {
       assertApproxEqAbs(aToken.balanceOf(morphoPoolAddress), _aTokenBalanceBefore + _amount, 1);
     } else {
       // Part of the USDC variable debt is repayed
-      assertEq(
+      assertApproxEqAbs(
         variableDebtToken.balanceOf(morphoPoolAddress),
-        _variableDebtTokenBalanceBefore - _amount
+        _variableDebtTokenBalanceBefore - _amount,
+        1
       );
     }
 
