@@ -6,7 +6,7 @@ import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
 import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
 import { IERC4626 } from "openzeppelin/token/ERC20/extensions/ERC4626.sol";
 
-import { Claim, Claimer, IVault } from "v5-vrgda-claimer/Claimer.sol";
+import { Claimer } from "v5-vrgda-claimer/Claimer.sol";
 import { PrizePool } from "v5-prize-pool/PrizePool.sol";
 import { LiquidationPair } from "v5-liquidator/LiquidationPair.sol";
 import { LiquidationRouter } from "v5-liquidator/LiquidationRouter.sol";
@@ -76,11 +76,9 @@ contract Helpers is Test {
     Vault _vault,
     PrizePool _prizePool,
     address _user,
+    uint32[] memory _userPrizeIndices,
     uint8[] memory _tiers
   ) internal returns (uint256) {
-    Claim[] memory claims = new Claim[](1);
-    claims[0] = Claim({ vault: IVault(address(_vault)), winner: _user, tier: _tiers[0] });
-
     uint32 _drawPeriodSeconds = _prizePool.drawPeriodSeconds();
 
     vm.warp(
@@ -91,7 +89,18 @@ contract Helpers is Test {
         10
     );
 
-    (, uint256 _totalFees) = _claimer.claimPrizes(1, claims, address(this));
+    address[] memory _winners = new address[](1);
+    _winners[0] = _user;
+    uint32[][] memory _prizeIndices = new uint32[][](1);
+    _prizeIndices[0] = _userPrizeIndices;
+
+    uint256 _totalFees = _claimer.claimPrizes(
+      Vault(address(_vault)),
+      _tiers[0],
+      _winners,
+      _prizeIndices,
+      address(this)
+    );
 
     return _totalFees;
   }

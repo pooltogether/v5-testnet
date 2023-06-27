@@ -7,7 +7,7 @@ import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
 
 import { AlreadyClaimedPrize } from "v5-prize-pool/PrizePool.sol";
 
-import { IntegrationBaseSetup, IVault } from "test/utils/IntegrationBaseSetup.t.sol";
+import { IntegrationBaseSetup } from "test/utils/IntegrationBaseSetup.t.sol";
 import { Helpers } from "test/utils/Helpers.t.sol";
 
 contract ClaimIntegrationTest is IntegrationBaseSetup, Helpers {
@@ -45,11 +45,14 @@ contract ClaimIntegrationTest is IntegrationBaseSetup, Helpers {
     uint8[] memory _tiers = new uint8[](1);
     _tiers[0] = _tier;
 
-    uint256 _prizeSize = prizePool.calculatePrizeSize(_tier);
+    uint256 _prizeSize = prizePool.getTierPrizeSize(_tier);
     uint256 _prizePoolBalanceBeforeClaim = prizeToken.balanceOf(address(prizePool));
     uint256 _alicePrizeTokenBalanceBeforeClaim = prizeToken.balanceOf(alice);
 
-    uint256 _claimFees = _claim(claimer, vault, prizePool, alice, _tiers);
+    uint32[] memory _prizeIndices = new uint32[](1);
+    _prizeIndices[0] = 0;
+
+    uint256 _claimFees = _claim(claimer, vault, prizePool, alice, _prizeIndices, _tiers);
 
     assertEq(
       prizeToken.balanceOf(alice),
@@ -62,6 +65,6 @@ contract ClaimIntegrationTest is IntegrationBaseSetup, Helpers {
     );
 
     // Fails here with the error AlreadyClaimedPrize
-    _claim(claimer, vault, prizePool, alice, _tiers);
+    _claim(claimer, vault, prizePool, alice, _prizeIndices, _tiers);
   }
 }

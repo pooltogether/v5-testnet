@@ -5,11 +5,11 @@ import "forge-std/Test.sol";
 import { IERC20, IERC4626 } from "openzeppelin/token/ERC20/extensions/ERC4626.sol";
 
 import { DrawBeacon, RNGInterface } from "v5-draw-beacon/DrawBeacon.sol";
-import { PrizePool, SD59x18 } from "v5-prize-pool/PrizePool.sol";
+import { PrizePool, ConstructorParams, SD59x18 } from "v5-prize-pool/PrizePool.sol";
 import { ud2x18 } from "prb-math/UD2x18.sol";
 import { sd1x18 } from "prb-math/SD1x18.sol";
 import { TwabController } from "v5-twab-controller/TwabController.sol";
-import { Claimer, IVault } from "v5-vrgda-claimer/Claimer.sol";
+import { Claimer } from "v5-vrgda-claimer/Claimer.sol";
 import { ILiquidationSource } from "v5-liquidator/interfaces/ILiquidationSource.sol";
 import { LiquidationPair } from "v5-liquidator/LiquidationPair.sol";
 import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";
@@ -74,22 +74,25 @@ contract ForkBaseSetup is Test {
     prizeTokenAddress = address(0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e); // POOL token on Ethereum
     prizeToken = IERC20(prizeTokenAddress);
 
-    twabController = new TwabController();
+    twabController = new TwabController(1 days, uint32(block.timestamp));
 
     uint64 drawStartsAt = uint64(block.timestamp);
 
     prizePool = new PrizePool(
-      prizeToken,
-      twabController,
-      uint32(365), // grand prize should occur once a year
-      drawPeriodSeconds,
-      drawStartsAt,
-      uint8(2), // minimum number of tiers
-      100,
-      10,
-      10,
-      ud2x18(0.9e18), // claim threshold of 90%
-      sd1x18(0.9e18) // alpha
+      ConstructorParams(
+        prizeToken,
+        twabController,
+        address(0),
+        uint16(365), // grand prize should occur once a year
+        drawPeriodSeconds,
+        drawStartsAt,
+        uint8(3), // minimum number of tiers
+        100,
+        10,
+        10,
+        ud2x18(0.9e18), // claim threshold of 90%
+        sd1x18(0.9e18) // alpha
+      )
     );
 
     drawBeacon = new DrawBeacon(
