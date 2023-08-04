@@ -11,9 +11,6 @@
 [submodule "lib/v5-liquidator"]
 	path = lib/v5-liquidator
 	url = https://github.com/pooltogether/v5-liquidator
-[submodule "lib/v5-vrgda-claimer"]
-	path = lib/v5-vrgda-claimer
-	url = https://github.com/pooltogether/v5-vrgda-claimer
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/openzeppelin/openzeppelin-contracts
