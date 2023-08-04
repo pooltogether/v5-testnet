@@ -34,3 +34,6 @@
 [submodule "lib/pt-v5-rng-contracts"]
 	path = lib/pt-v5-rng-contracts
 	url = https://github.com/generationsoftware/pt-v5-rng-contracts
+[submodule "lib/pt-v5-draw-auction"]
+	path = lib/pt-v5-draw-auction
+	url = https://github.com/generationsoftware/pt-v5-draw-auction
