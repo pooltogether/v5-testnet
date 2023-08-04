@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.17;
 
-import { PrizePool, SD59x18 } from "v5-prize-pool/PrizePool.sol";
+import { PrizePool, SD59x18 } from "pt-v5-prize-pool/PrizePool.sol";
 import { ud2x18 } from "prb-math/UD2x18.sol";
 import { sd1x18 } from "prb-math/SD1x18.sol";
-import { TwabController } from "v5-twab-controller/TwabController.sol";
-import { Claimer } from "v5-vrgda-claimer/Claimer.sol";
-import { ILiquidationSource } from "v5-liquidator/interfaces/ILiquidationSource.sol";
-import { LiquidationPair } from "v5-liquidator/LiquidationPair.sol";
-import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";
-import { LiquidationRouter } from "v5-liquidator/LiquidationRouter.sol";
-import { UFixed32x4 } from "v5-liquidator-libraries/FixedMathLib.sol";
+import { TwabController } from "pt-v5-twab-controller/TwabController.sol";
+import { Claimer } from "pt-v5-vrgda-claimer/Claimer.sol";
+import { ILiquidationSource } from "pt-v5-liquidator-interfaces/ILiquidationSource.sol";
+import { LiquidationPair } from "pt-v5-cgda-liquidator/LiquidationPair.sol";
+import { LiquidationPairFactory } from "pt-v5-cgda-liquidator/LiquidationPairFactory.sol";
+import { LiquidationRouter } from "pt-v5-cgda-liquidator/LiquidationRouter.sol";
+import { UFixed32x4 } from "pt-v5-cgda-liquidator/lib/FixedMathLib.sol";
 
-import { ERC20Mintable } from "src/ERC20Mintable.sol";
-import { VaultMintRate } from "src/VaultMintRate.sol";
-import { ERC20, YieldVaultMintRate } from "src/YieldVaultMintRate.sol";
+import { ERC20Mintable } from "../../src/ERC20Mintable.sol";
+import { VaultMintRate } from "../../src/VaultMintRate.sol";
+import { ERC20, YieldVaultMintRate } from "../../src/YieldVaultMintRate.sol";
 
-import { Helpers } from "script/helpers/Helpers.sol";
+import { Helpers } from "../helpers/Helpers.sol";
 
 contract DeployVault is Helpers {
   function _getMinK(

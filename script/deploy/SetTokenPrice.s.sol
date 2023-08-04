@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.17;
 
-import { ERC20Mintable } from "src/ERC20Mintable.sol";
-import { MarketRate } from "src/MarketRate.sol";
+import { ERC20Mintable } from "../../src/ERC20Mintable.sol";
+import { MarketRate } from "../../src/MarketRate.sol";
 
-import { Helpers } from "script/helpers/Helpers.sol";
+import { Helpers } from "../helpers/Helpers.sol";
 
 contract SetTokenPrice is Helpers {
   function _setTokensPrice() internal {

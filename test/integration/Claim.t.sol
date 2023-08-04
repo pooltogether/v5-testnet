@@ -5,10 +5,10 @@ import "forge-std/Test.sol";
 import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
 import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
 
-import { AlreadyClaimedPrize } from "v5-prize-pool/PrizePool.sol";
+import { AlreadyClaimedPrize } from "pt-v5-prize-pool/PrizePool.sol";
 
-import { IntegrationBaseSetup } from "test/utils/IntegrationBaseSetup.t.sol";
-import { Helpers } from "test/utils/Helpers.t.sol";
+import { IntegrationBaseSetup } from "../utils/IntegrationBaseSetup.t.sol";
+import { Helpers } from "../utils/Helpers.t.sol";
 
 contract ClaimIntegrationTest is IntegrationBaseSetup, Helpers {
   /* ============ setUp ============ */

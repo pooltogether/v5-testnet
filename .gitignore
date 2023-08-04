@@ -13,3 +13,6 @@ deployments/local/*
 .DS_Store
 .envrc
 node_modules
+
+# VS Code history
+.history

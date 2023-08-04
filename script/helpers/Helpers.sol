@@ -6,16 +6,16 @@ import { stdJson } from "forge-std/StdJson.sol";
 import { strings } from "solidity-stringutils/strings.sol";
 import { Strings } from "openzeppelin/utils/Strings.sol";
 
-import { Claimer } from "v5-vrgda-claimer/Claimer.sol";
-import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";
-import { PrizePool } from "v5-prize-pool/PrizePool.sol";
-import { TwabController } from "v5-twab-controller/TwabController.sol";
+import { Claimer } from "pt-v5-vrgda-claimer/Claimer.sol";
+import { LiquidationPairFactory } from "pt-v5-cgda-liquidator/LiquidationPairFactory.sol";
+import { PrizePool } from "pt-v5-prize-pool/PrizePool.sol";
+import { TwabController } from "pt-v5-twab-controller/TwabController.sol";
 
-import { ERC20Mintable } from "src/ERC20Mintable.sol";
-import { MarketRate } from "src/MarketRate.sol";
-import { TokenFaucet } from "src/TokenFaucet.sol";
-import { VaultMintRate } from "src/VaultMintRate.sol";
-import { YieldVaultMintRate } from "src/YieldVaultMintRate.sol";
+import { ERC20Mintable } from "../../src/ERC20Mintable.sol";
+import { MarketRate } from "../../src/MarketRate.sol";
+import { TokenFaucet } from "../../src/TokenFaucet.sol";
+import { VaultMintRate } from "../../src/VaultMintRate.sol";
+import { YieldVaultMintRate } from "../../src/YieldVaultMintRate.sol";
 
 // Testnet deployment paths
 string constant ETHEREUM_GOERLI_PATH = "broadcast/Deploy.s.sol/5/";

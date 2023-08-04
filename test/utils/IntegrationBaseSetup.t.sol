@@ -5,17 +5,17 @@ import "forge-std/Test.sol";
 import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
 import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
 
-import { PrizePool, ConstructorParams, SD59x18 } from "v5-prize-pool/PrizePool.sol";
+import { PrizePool, ConstructorParams, SD59x18 } from "pt-v5-prize-pool/PrizePool.sol";
 import { ud2x18 } from "prb-math/UD2x18.sol";
 import { sd1x18 } from "prb-math/SD1x18.sol";
-import { TwabController } from "v5-twab-controller/TwabController.sol";
-import { Claimer } from "v5-vrgda-claimer/Claimer.sol";
-import { ILiquidationSource } from "v5-liquidator/interfaces/ILiquidationSource.sol";
-import { LiquidationPair } from "v5-liquidator/LiquidationPair.sol";
-import { LiquidationPairFactory } from "v5-liquidator/LiquidationPairFactory.sol";
-import { LiquidationRouter } from "v5-liquidator/LiquidationRouter.sol";
+import { TwabController } from "pt-v5-twab-controller/TwabController.sol";
+import { Claimer } from "pt-v5-vrgda-claimer/Claimer.sol";
+import { ILiquidationSource } from "pt-v5-liquidator-interfaces/ILiquidationSource.sol";
+import { LiquidationPair } from "pt-v5-cgda-liquidator/LiquidationPair.sol";
+import { LiquidationPairFactory } from "pt-v5-cgda-liquidator/LiquidationPairFactory.sol";
+import { LiquidationRouter } from "pt-v5-cgda-liquidator/LiquidationRouter.sol";
 import { UFixed32x4 } from "v5-liquidator-libraries/FixedMathLib.sol";
-import { Vault } from "v5-vault/Vault.sol";
+import { Vault } from "pt-v5-vault/Vault.sol";
 import { YieldVault } from "v5-vault-mock/YieldVault.sol";
 
 import { Utils } from "./Utils.t.sol";

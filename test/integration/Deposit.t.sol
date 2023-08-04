@@ -5,8 +5,8 @@ import "forge-std/Test.sol";
 import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
 import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
 
-import { IntegrationBaseSetup } from "test/utils/IntegrationBaseSetup.t.sol";
-import { Helpers } from "test/utils/Helpers.t.sol";
+import { IntegrationBaseSetup } from "../utils/IntegrationBaseSetup.t.sol";
+import { Helpers } from "../utils/Helpers.t.sol";
 
 contract DepositIntegrationTest is IntegrationBaseSetup, Helpers {
   /* ============ setUp ============ */
