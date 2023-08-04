@@ -7,11 +7,12 @@ import { PrizePool, ConstructorParams, SD59x18 } from "pt-v5-prize-pool/PrizePoo
 import { ud2x18 } from "prb-math/UD2x18.sol";
 import { sd1x18 } from "prb-math/SD1x18.sol";
 import { TwabController } from "pt-v5-twab-controller/TwabController.sol";
-import { Claimer } from "pt-v5-vrgda-claimer/Claimer.sol";
+import { Claimer } from "pt-v5-claimer/Claimer.sol";
 import { ILiquidationSource } from "pt-v5-liquidator-interfaces/ILiquidationSource.sol";
 import { LiquidationPair } from "pt-v5-cgda-liquidator/LiquidationPair.sol";
 import { LiquidationPairFactory } from "pt-v5-cgda-liquidator/LiquidationPairFactory.sol";
 import { LiquidationRouter } from "pt-v5-cgda-liquidator/LiquidationRouter.sol";
+import { VaultFactory } from "pt-v5-vault/VaultFactory.sol";
 
 import { ERC20Mintable } from "../../src/ERC20Mintable.sol";
 import { VaultMintRate } from "../../src/VaultMintRate.sol";
@@ -61,6 +62,8 @@ contract DeployPool is Helpers {
 
     LiquidationPairFactory liquidationPairFactory = new LiquidationPairFactory();
     new LiquidationRouter(liquidationPairFactory);
+
+    new VaultFactory();
 
     vm.stopBroadcast();
   }

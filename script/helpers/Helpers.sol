@@ -6,7 +6,7 @@ import { stdJson } from "forge-std/StdJson.sol";
 import { strings } from "solidity-stringutils/strings.sol";
 import { Strings } from "openzeppelin/utils/Strings.sol";
 
-import { Claimer } from "pt-v5-vrgda-claimer/Claimer.sol";
+import { Claimer } from "pt-v5-claimer/Claimer.sol";
 import { LiquidationPairFactory } from "pt-v5-cgda-liquidator/LiquidationPairFactory.sol";
 import { PrizePool } from "pt-v5-prize-pool/PrizePool.sol";
 import { TwabController } from "pt-v5-twab-controller/TwabController.sol";
