@@ -13,9 +13,6 @@
 	branch = v3
 	path = lib/prb-math
 	url = https://github.com/PaulRBerg/prb-math
-[submodule "lib/v5-prize-pool"]
-	path = lib/v5-prize-pool
-	url = https://github.com/pooltogether/v5-prize-pool
 [submodule "lib/solidity-stringutils"]
 	path = lib/solidity-stringutils
 	url = https://github.com/Arachnid/solidity-stringutils
