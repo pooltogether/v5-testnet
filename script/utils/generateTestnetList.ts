@@ -17,7 +17,10 @@ const ethGoerliDeploymentPaths = [
   ethGoerliVaultDeploymentPath,
 ];
 
-const ethGoerliTokenDeploymentPaths = [ethGoerliStableTokenDeploymentPath, ethGoerliTokenDeploymentPath];
+const ethGoerliTokenDeploymentPaths = [
+  ethGoerliStableTokenDeploymentPath,
+  ethGoerliTokenDeploymentPath,
+];
 
 writeList(generateContractList(ethGoerliDeploymentPaths), "deployments/ethGoerli", "contracts");
 writeList(
@@ -38,7 +41,10 @@ const ethSepoliaDeploymentPaths = [
   ethSepoliaVaultDeploymentPath,
 ];
 
-const ethSepoliaTokenDeploymentPaths = [ethSepoliaStableTokenDeploymentPath, ethSepoliaTokenDeploymentPath];
+const ethSepoliaTokenDeploymentPaths = [
+  ethSepoliaStableTokenDeploymentPath,
+  ethSepoliaTokenDeploymentPath,
+];
 
 writeList(generateContractList(ethSepoliaDeploymentPaths), "deployments/ethSepolia", "contracts");
 writeList(

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.19;
 
 import { IERC4626, IERC20 } from "openzeppelin/mocks/ERC4626Mock.sol";
 
@@ -30,7 +30,7 @@ contract VaultMintRate is Vault {
       _twabController,
       _yieldVault,
       _prizePool,
-      _claimer,
+      address(_claimer),
       _yieldFeeRecipient,
       _yieldFeePercentage,
       _owner

@@ -92,9 +92,20 @@ For the coverage to work, you will need to setup the `MAINNET_RPC_URL` repositor
 
 ## Deployment
 
+First setup npm:
+
+```
+nvm use
+yarn
+```
+
 ### Local
 
-Start `anvil` with the following command: `anvil -m $MNEMONIC`
+Start anvil:
+
+```
+anvil --code-size-limit $LOCAL_CODE_SIZE_LIMIT_BYTES
+```
 
 In another terminal window, run the following command: `npm run deploy:contracts:local`
 

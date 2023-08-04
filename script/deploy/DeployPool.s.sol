@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.19;
+
+import "forge-std/console2.sol";
 
 import { Script } from "forge-std/Script.sol";
 
@@ -14,6 +16,12 @@ import { LiquidationPairFactory } from "pt-v5-cgda-liquidator/LiquidationPairFac
 import { LiquidationRouter } from "pt-v5-cgda-liquidator/LiquidationRouter.sol";
 import { VaultFactory } from "pt-v5-vault/VaultFactory.sol";
 
+import { RNGBlockhash } from "rng/RNGBlockhash.sol";
+import { RNGInterface } from "rng/RNGInterface.sol";
+import { RngAuction } from "pt-v5-draw-auction/RngAuction.sol";
+import { RngAuctionRelayerDirect } from "pt-v5-draw-auction/RngAuctionRelayerDirect.sol";
+import { RngRelayAuction } from "pt-v5-draw-auction/RngRelayAuction.sol";
+
 import { ERC20Mintable } from "../../src/ERC20Mintable.sol";
 import { VaultMintRate } from "../../src/VaultMintRate.sol";
 import { ERC20, YieldVaultMintRate } from "../../src/YieldVaultMintRate.sol";
@@ -24,19 +32,39 @@ contract DeployPool is Helpers {
   uint32 internal constant DRAW_PERIOD_SECONDS = 2 hours;
 
   function run() public {
-    vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+    vm.startBroadcast();
 
     ERC20Mintable prizeToken = _getToken("POOL", _tokenDeployPath);
     TwabController twabController = new TwabController(1 days, uint32(block.timestamp));
+
+    uint64 firstDrawStartsAt = uint64(block.timestamp);
+    uint64 auctionDuration = DRAW_PERIOD_SECONDS / 4;
+    uint64 auctionTargetSaleTime = auctionDuration / 2;
+
+    console2.log("constructing rng stuff....");
+
+    RNGBlockhash rng = new RNGBlockhash();
+
+    RngAuction rngAuction = new RngAuction(
+      rng,
+      address(this),
+      DRAW_PERIOD_SECONDS,
+      firstDrawStartsAt,
+      auctionDuration,
+      auctionTargetSaleTime
+    );
+
+    RngAuctionRelayerDirect rngAuctionRelayerDirect = new RngAuctionRelayerDirect(rngAuction);
+
+    console2.log("constructing prize pool....");
 
     PrizePool prizePool = new PrizePool(
       ConstructorParams(
         prizeToken,
         twabController,
         address(0),
-        uint16(7), // grand prize should occur every 3.5 days
         DRAW_PERIOD_SECONDS,
-        uint64(block.timestamp), // drawStartedAt
+        firstDrawStartsAt, // drawStartedAt
         uint8(3), // minimum number of tiers
         100,
         10,
@@ -46,17 +74,16 @@ contract DeployPool is Helpers {
       )
     );
 
-    if (block.chainid == 5) {
-      prizePool.setDrawManager(GOERLI_DEFENDER_ADDRESS);
-    }
+    console2.log("constructing auction....");
 
-    if (block.chainid == 11155111) {
-      prizePool.setDrawManager(SEPOLIA_DEFENDER_ADDRESS);
-    }
+    RngRelayAuction rngRelayAuction = new RngRelayAuction(
+      prizePool,
+      address(rngAuctionRelayerDirect),
+      auctionDuration,
+      auctionTargetSaleTime
+    );
 
-    if (block.chainid == 80001) {
-      prizePool.setDrawManager(MUMBAI_DEFENDER_ADDRESS);
-    }
+    prizePool.setDrawManager(address(rngRelayAuction));
 
     new Claimer(prizePool, 0.0001e18, 1000e18, DRAW_PERIOD_SECONDS, ud2x18(0.5e18));
 

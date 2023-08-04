@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.19;
 
 import "forge-std/Test.sol";
 import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
@@ -11,7 +11,7 @@ import { PrizePool } from "pt-v5-prize-pool/PrizePool.sol";
 import { LiquidationPair } from "pt-v5-cgda-liquidator/LiquidationPair.sol";
 import { LiquidationRouter } from "pt-v5-cgda-liquidator/LiquidationRouter.sol";
 import { Vault } from "pt-v5-vault/Vault.sol";
-import { YieldVault } from "v5-vault-mock/YieldVault.sol";
+import { YieldVault } from "pt-v5-vault-mock/YieldVault.sol";
 
 contract Helpers is Test {
   /* ============ Deposit ============ */
@@ -48,7 +48,7 @@ contract Helpers is Test {
     address _user
   ) internal returns (uint256 userPrizeTokenBalanceBeforeSwap, uint256 prizeTokenContributed) {
     uint256 maxPrizeTokenContributed = _liquidationPair.computeExactAmountIn(_yield);
-    uint256 vaultShares = _liquidationPair.computeExactAmountOut(prizeTokenContributed);
+    uint256 vaultShares = _liquidationPair.estimateAmountOut(prizeTokenContributed);
     console2.log("prizeTokenContributed", prizeTokenContributed);
     console2.log("vaultShares", vaultShares);
 
@@ -66,8 +66,8 @@ contract Helpers is Test {
 
   /* ============ Award ============ */
   function _award(PrizePool _prizePool, uint256 _winningRandomNumber) internal {
-    vm.warp(_prizePool.nextDrawStartsAt() + _prizePool.drawPeriodSeconds());
-    _prizePool.completeAndStartNextDraw(_winningRandomNumber);
+    vm.warp(_prizePool.openDrawStartedAt() + _prizePool.drawPeriodSeconds());
+    _prizePool.closeDraw(_winningRandomNumber);
   }
 
   /* ============ Claim ============ */
@@ -84,7 +84,7 @@ contract Helpers is Test {
     vm.warp(
       _drawPeriodSeconds /
         _prizePool.estimatedPrizeCount() +
-        _prizePool.lastCompletedDrawStartedAt() +
+        _prizePool.lastClosedDrawStartedAt() +
         _drawPeriodSeconds +
         10
     );

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.19;
 
 import { ERC20Mintable } from "../../src/ERC20Mintable.sol";
 import { VaultMintRate } from "../../src/VaultMintRate.sol";
@@ -61,7 +61,7 @@ contract SetYieldVaultRole is Helpers {
   }
 
   function run() public {
-    vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+    vm.startBroadcast();
     _setYieldVaultsRole();
     vm.stopBroadcast();
   }

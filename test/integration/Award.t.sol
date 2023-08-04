@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.19;
 
 import "forge-std/Test.sol";
 import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
@@ -28,6 +28,8 @@ contract AwardIntegrationTest is IntegrationBaseSetup, Helpers {
 
     _accrueYield(underlyingAsset, yieldVault, _yield);
     prizeToken.mint(alice, 1000e18);
+
+    vm.warp(block.timestamp + 36 hours);
 
     uint256 maxAmountOut = liquidationPair.maxAmountOut();
 

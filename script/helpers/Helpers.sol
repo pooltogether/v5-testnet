@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.19;
 
 import { Script } from "forge-std/Script.sol";
 import { stdJson } from "forge-std/StdJson.sol";
@@ -120,7 +120,7 @@ abstract contract Helpers is Script {
     // Remove directory jargon at the beginning of the slice (Fix for Windows Git Bash)
     strings.slice memory dirEnd = "/:".toSlice();
     strings.slice memory sWithoutDirPrefix = s.copy().find(dirEnd).beyond(dirEnd);
-    if(!sWithoutDirPrefix.empty()) s = sWithoutDirPrefix;
+    if (!sWithoutDirPrefix.empty()) s = sWithoutDirPrefix;
 
     // Remove newline and push into array
     strings.slice memory delim = ", ".toSlice();

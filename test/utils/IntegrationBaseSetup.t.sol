@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.19;
 
 import "forge-std/Test.sol";
 import { ERC20Mock } from "openzeppelin/mocks/ERC20Mock.sol";
@@ -8,15 +8,15 @@ import { IERC20 } from "openzeppelin/token/ERC20/IERC20.sol";
 import { PrizePool, ConstructorParams, SD59x18 } from "pt-v5-prize-pool/PrizePool.sol";
 import { ud2x18 } from "prb-math/UD2x18.sol";
 import { sd1x18 } from "prb-math/SD1x18.sol";
+import { convert } from "prb-math/SD59x18.sol";
 import { TwabController } from "pt-v5-twab-controller/TwabController.sol";
 import { Claimer } from "pt-v5-claimer/Claimer.sol";
 import { ILiquidationSource } from "pt-v5-liquidator-interfaces/ILiquidationSource.sol";
 import { LiquidationPair } from "pt-v5-cgda-liquidator/LiquidationPair.sol";
 import { LiquidationPairFactory } from "pt-v5-cgda-liquidator/LiquidationPairFactory.sol";
 import { LiquidationRouter } from "pt-v5-cgda-liquidator/LiquidationRouter.sol";
-import { UFixed32x4 } from "v5-liquidator-libraries/FixedMathLib.sol";
 import { Vault } from "pt-v5-vault/Vault.sol";
-import { YieldVault } from "v5-vault-mock/YieldVault.sol";
+import { YieldVault } from "pt-v5-vault-mock/YieldVault.sol";
 
 import { Utils } from "./Utils.t.sol";
 
@@ -71,14 +71,15 @@ contract IntegrationBaseSetup is Test {
 
     twabController = new TwabController(1 days, uint32(block.timestamp));
 
+    uint64 drawStartsAt = uint64(block.timestamp);
+
     prizePool = new PrizePool(
       ConstructorParams(
         prizeToken,
         twabController,
         address(0),
-        uint16(365), // grand prize should occur once a year
         drawPeriodSeconds, // drawPeriodSeconds
-        uint64(block.timestamp), // drawStartedAt
+        drawStartsAt, // drawStartedAt
         uint8(3), // minimum number of tiers
         100,
         10,
@@ -105,7 +106,7 @@ contract IntegrationBaseSetup is Test {
       twabController,
       yieldVault,
       prizePool,
-      claimer,
+      address(claimer),
       address(this),
       100000000, // 0.1 = 10%
       address(this)
@@ -115,17 +116,21 @@ contract IntegrationBaseSetup is Test {
 
     uint128 _virtualReserveIn = 10e18;
     uint128 _virtualReserveOut = 5e18;
-    uint256 _minK = (uint256(_virtualReserveIn) * _virtualReserveOut * 0.8e18) / 1e18;
 
+    // this is approximately the maximum decay constant, as the CGDA formula requires computing e^(decayConstant * time).
+    // since the data type is SD59x18 and e^134 ~= 1e58, we can divide 134 by the draw period to get the max decay constant.
+    SD59x18 _decayConstant = convert(130).div(convert(int(uint(drawPeriodSeconds))));
     liquidationPair = liquidationPairFactory.createPair(
       ILiquidationSource(vault),
       address(prizeToken),
       address(vault),
-      UFixed32x4.wrap(0.3e4),
-      UFixed32x4.wrap(0.02e4),
-      _virtualReserveIn,
-      _virtualReserveOut,
-      _minK
+      drawPeriodSeconds,
+      uint32(drawStartsAt),
+      uint32(drawPeriodSeconds / 2),
+      _decayConstant,
+      uint112(_virtualReserveIn),
+      uint112(_virtualReserveOut),
+      _virtualReserveOut // just make it up
     );
 
     vault.setLiquidationPair(liquidationPair);
