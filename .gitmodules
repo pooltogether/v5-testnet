@@ -31,3 +31,6 @@
 [submodule "lib/pt-v5-cgda-liquidator"]
 	path = lib/pt-v5-cgda-liquidator
 	url = https://github.com/generationsoftware/pt-v5-cgda-liquidator
+[submodule "lib/pt-v5-claimer"]
+	path = lib/pt-v5-claimer
+	url = https://github.com/generationsoftware/pt-v5-claimer
