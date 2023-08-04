@@ -28,9 +28,6 @@
 [submodule "lib/v5-vault"]
 	path = lib/v5-vault
 	url = https://github.com/pooltogether/v5-vault
-[submodule "lib/v5-draw-beacon"]
-	path = lib/v5-draw-beacon
-	url = https://github.com/pooltogether/v5-draw-beacon
 [submodule "lib/solidity-stringutils"]
 	path = lib/solidity-stringutils
 	url = https://github.com/Arachnid/solidity-stringutils
